@@ -1,0 +1,2 @@
+# FitRush
+DEPI Final Project
