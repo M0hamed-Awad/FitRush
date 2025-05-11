@@ -14,7 +14,7 @@ class HomeScreenBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
-        padding: EdgeInsets.all(8),
+        padding: EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 64),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 28,
