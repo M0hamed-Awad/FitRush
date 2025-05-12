@@ -9,10 +9,6 @@ class MiniWeekLineChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (weeklySteps.isEmpty) {
-      return const Text("No preview available");
-    }
-
     final maxY = weeklySteps.reduce((a, b) => a > b ? a : b).toDouble();
     final weekdays = _generateLast7DaysLabels();
 
