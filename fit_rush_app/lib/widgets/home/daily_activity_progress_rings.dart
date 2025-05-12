@@ -1,9 +1,11 @@
 import 'package:fit_rush_app/constants.dart';
-import 'package:fit_rush_app/services/health_service.dart';
+import 'package:fit_rush_app/cubits/today_health_cubit/today_health_cubit.dart';
+import 'package:fit_rush_app/cubits/today_health_cubit/today_health_cubit_states.dart';
 import 'package:fit_rush_app/widgets/common/custom_loading_indicator.dart';
 import 'package:fit_rush_app/widgets/common/fail_widget.dart';
 import 'package:fit_rush_app/widgets/home/fitness_rings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DailyActivityProgressRings extends StatefulWidget {
   const DailyActivityProgressRings({super.key});
@@ -15,79 +17,39 @@ class DailyActivityProgressRings extends StatefulWidget {
 
 class _DailyActivityProgressRingsState
     extends State<DailyActivityProgressRings> {
-  int? _steps;
-  double? _calories;
-  bool _isLoading = false;
-  String? _errorMessage;
-
-  Future<void> _fetchData<T>({
-    required Future<T?> Function() fetchDataMethod,
-    required bool isSteps,
-  }) async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final data = await fetchDataMethod();
-
-      setState(() {
-        if (isSteps) {
-          _steps = data as int;
-        } else {
-          _calories = data as double;
-        }
-        _isLoading = false;
-      });
-
-      if (data == null) {
-        setState(() {
-          _errorMessage = 'Failed to get steps. Check permissions!';
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _errorMessage = 'Error: ${e.toString()}';
-        _isLoading = false;
-      });
-    }
-  }
-
-  void _fetchAllData() {
-    _fetchData(fetchDataMethod: HealthService.getTodayCalories, isSteps: false);
-    _fetchData(fetchDataMethod: HealthService.getTodaySteps, isSteps: true);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchAllData();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return _isLoading
-        ? Center(child: CustomLoadingIndicator())
-        : _buildDailyProgressRings();
+    return BlocBuilder<TodayHealthCubit, TodayHealthState>(
+      builder: (context, state) {
+        if (state is TodayHealthLoading) {
+          return const Center(child: CustomLoadingIndicator());
+        } else if (state is TodayHealthFailed) {
+          return FailWidget(
+            errorMessage: state.errorMessage,
+            onRetry: () => context.read<TodayHealthCubit>().fetchTodayData(),
+          );
+        } else if (state is TodayHealthLoaded) {
+          return _buildDailyProgressRings(
+            steps: state.steps,
+            calories: state.calories,
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
+      },
+    );
   }
 
-  Container _buildDailyProgressRings() {
+  Container _buildDailyProgressRings({
+    required int steps,
+    required double calories,
+  }) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 32),
       child: Column(
         spacing: 16,
         children: [
-          if (_errorMessage != null)
-            FailWidget(
-              errorMessage: _errorMessage ?? "",
-              onRetry: () {
-                _fetchAllData();
-              },
-            )
-          else
-            FitnessRings(steps: _steps ?? 0, calories: _calories ?? 0),
+          FitnessRings(steps: steps, calories: calories),
           _buildRingsIconsRow(),
         ],
       ),
