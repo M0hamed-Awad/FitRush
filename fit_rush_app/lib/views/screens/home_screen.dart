@@ -1,6 +1,6 @@
 import 'package:fit_rush_app/constants.dart';
 import 'package:fit_rush_app/helper/navigation_helper.dart';
-import 'package:fit_rush_app/screens/profile_screen.dart';
+import 'package:fit_rush_app/views/screens/profile_screen.dart';
 import 'package:fit_rush_app/widgets/home/home_screen_body.dart';
 import 'package:flutter/material.dart';
 
@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
         // Handle FAB press
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-      backgroundColor: kAccentOrangeColor,
+      backgroundColor: kPrimaryColor,
       foregroundColor: kSecondaryColor,
       child: Icon(Icons.add_rounded, size: 32),
     );
@@ -87,14 +87,14 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Icon(
           icon,
-          color: _selectedIndex == index ? kAccentOrangeColor : kTextColorDark,
+          color: _selectedIndex == index ? kPrimaryColor : kTextColorDark,
         ),
         SizedBox(height: 4),
         Text(
           label,
           style: TextStyle(
             color:
-                _selectedIndex == index ? kAccentOrangeColor : kTextColorDark,
+                _selectedIndex == index ? kPrimaryColor : kTextColorDark,
             fontSize: 12,
             fontWeight: FontWeight.w500,
           ),
