@@ -10,9 +10,6 @@ class HealthService {
     // Configure Health Package
     await _healthInstance.configure();
 
-    // Grant Permissions
-    // await _manageHealthPermissionsForAndroid();
-
     // Check if Permissions Granted
     await _checkForPermissions();
   }
@@ -48,41 +45,7 @@ class HealthService {
       debugPrint('[PERMISSIONS] Already granted');
     }
   }
-
-  static Future<void> _manageHealthPermissionsForAndroid() async {
-    if (Platform.isAndroid) {
-      // Check if Health Connect is Installed
-      final installed = await _healthInstance.isHealthConnectAvailable();
-      debugPrint('[ANDROID] Health Connect installed: $installed');
-
-      // Check if Work in Background Permission is Granted
-      final bgAccess =
-          await _healthInstance.isHealthDataInBackgroundAuthorized();
-      debugPrint('[ANDROID] Background access: $bgAccess');
-      // Grant Background Access Permission
-      if (!bgAccess) {
-        await _healthInstance.requestHealthDataInBackgroundAuthorization();
-      }
-
-      // Check if Access History Permission is Granted
-      final historyAccess =
-          await _healthInstance.isHealthDataHistoryAuthorized();
-      debugPrint('[ANDROID] History access: $historyAccess');
-      // Grant Access History Permission
-      if (!historyAccess) {
-        await _healthInstance.requestHealthDataHistoryAuthorization();
-      }
-
-      // Check if Health Connect SDK is Compatible with the User Device or NOT
-      final hcStatus = await _healthInstance.getHealthConnectSdkStatus();
-      if (hcStatus != HealthConnectSdkStatus.sdkAvailable) {
-        debugPrint('[ERROR] Health Connect not available');
-        return;
-      }
-    }
-  }
-
-  static Future<int?> getTodaySteps() async {
+  static Future<int?> getTodaysSteps() async {
     try {
       final now = DateTime.now();
       final midnight = DateTime(now.year, now.month, now.day);
@@ -96,7 +59,7 @@ class HealthService {
         types: [HealthDataType.STEPS],
       );
       debugPrint('[DEBUG] Raw step data: ${rawData.length} entries');
-      debugPrint('[DEBUG] Raw data: ${rawData}');
+      debugPrint('[DEBUG] Raw data: $rawData');
 
       final steps = await _healthInstance.getTotalStepsInInterval(
         midnight,
@@ -112,7 +75,7 @@ class HealthService {
     }
   }
 
-  static Future<double?> getTodayCalories() async {
+  static Future<double?> getTodaysCalories() async {
     final now = DateTime.now();
     final midnight = DateTime(now.year, now.month, now.day);
 
@@ -132,7 +95,7 @@ class HealthService {
     return totalCalories;
   }
 
-  static Future<double?> getTodayDistance() async {
+  static Future<double?> getTodaysDistanceCovered() async {
     final (startTime, endTime) = _getTodaysInterval();
 
     List<HealthDataPoint> data = await _healthInstance.getHealthDataFromTypes(
@@ -186,8 +149,8 @@ class HealthService {
     return (DateTime(now.year, now.month, now.day), now);
   }
 
-  static Future<List<int>> getLast7DaysSteps() async {
-    List<int> weeklySteps = [];
+  static Future<List<int>> getLastSevenDaysSteps() async {
+    List<int> lastSevenDaysSteps = [];
 
     try {
       final now = DateTime.now();
@@ -205,17 +168,53 @@ class HealthService {
           dayEnd,
         );
 
-        weeklySteps.add(steps ?? 0); // if null, fallback to 0
-
-        debugPrint(
-          '[DEBUG] ${dayStart.toIso8601String().split("T").first} - Steps: $steps',
-        );
+        lastSevenDaysSteps.add(steps ?? 0); // if null, fallback to 0
       }
 
-      return weeklySteps;
+      debugPrint('[DEBUG] Last 7 days Steps: $lastSevenDaysSteps');
+      return lastSevenDaysSteps;
     } catch (e) {
       debugPrint('[ERROR] Fetching weekly steps failed: $e');
       return List.filled(7, 0); // fallback list of 0s
+    }
+  }
+
+  static Future<List<double>> getLastSevenDaysCalories() async {
+    List<double> lastSevenDayCalories = [];
+
+    try {
+      final now = DateTime.now();
+
+      for (int i = 6; i >= 0; i--) {
+        final dayStart = DateTime(
+          now.year,
+          now.month,
+          now.day,
+        ).subtract(Duration(days: i));
+        final dayEnd = dayStart.add(Duration(days: 1));
+
+        List<HealthDataPoint> data = await _healthInstance
+            .getHealthDataFromTypes(
+              startTime: dayStart,
+              endTime: dayEnd,
+              types: [HealthDataType.ACTIVE_ENERGY_BURNED],
+            );
+
+        double totalCalories = data.fold(
+          0.0,
+          (sum, point) => sum + (point.value as double),
+        );
+
+        debugPrint('[DEBUG] Total Calories: $totalCalories');
+
+        lastSevenDayCalories.add(totalCalories);
+      }
+
+      debugPrint('[DEBUG] Last 7 days Calories: $lastSevenDayCalories');
+      return lastSevenDayCalories;
+    } catch (e) {
+      debugPrint('[ERROR] Fetching weekly Calories failed: $e');
+      return List.filled(7, 0);
     }
   }
 }
