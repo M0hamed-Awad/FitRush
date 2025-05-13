@@ -1,8 +1,13 @@
 import 'package:fit_rush_app/constants.dart';
+import 'package:fit_rush_app/cubits/health_permissions_cubit/health_permissions_cubit.dart';
+import 'package:fit_rush_app/cubits/health_permissions_cubit/health_permissions_cubit_states.dart';
 import 'package:fit_rush_app/helper/navigation_helper.dart';
 import 'package:fit_rush_app/views/screens/profile_screen.dart';
+import 'package:fit_rush_app/widgets/common/custom_loading_indicator.dart';
+import 'package:fit_rush_app/widgets/common/fail_widget.dart';
 import 'package:fit_rush_app/widgets/home/home_screen_body.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -38,7 +43,40 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: _buildFab(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: _buildBottomNavBar(),
-      body: HomeScreenBody(),
+      body: _buildHomeScreenBody(),
+    );
+  }
+
+  BlocBuilder<HealthPermissionsCubit, HealthPermissionsState>
+  _buildHomeScreenBody() {
+    return BlocBuilder<HealthPermissionsCubit, HealthPermissionsState>(
+      builder: (context, state) {
+        if (state is HealthPermissionsLoading) {
+          return Center(child: CustomLoadingIndicator());
+        } else if (state is HealthPermissionsDenied) {
+          return _buildOnPermissionsDeniedWidget(state, context);
+        } else if (state is HealthPermissionsGranted) {
+          return HomeScreenBody();
+        } else {
+          return SizedBox.shrink();
+        }
+      },
+    );
+  }
+
+  Center _buildOnPermissionsDeniedWidget(
+    HealthPermissionsDenied state,
+    BuildContext context,
+  ) {
+    return Center(
+      child: FailWidget(
+        errorMessage: "Permission denied: ${state.errorMessage}",
+        onRetry: () {
+          BlocProvider.of<HealthPermissionsCubit>(
+            context,
+          ).requestPermissionsOnce();
+        },
+      ),
     );
   }
 
@@ -93,8 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Text(
           label,
           style: TextStyle(
-            color:
-                _selectedIndex == index ? kPrimaryColor : kTextColorDark,
+            color: _selectedIndex == index ? kPrimaryColor : kTextColorDark,
             fontSize: 12,
             fontWeight: FontWeight.w500,
           ),
