@@ -48,8 +48,6 @@ class HealthService {
     }
   }
 
-
-
   static Future<int?> getTodaysSteps() async {
     try {
       final now = DateTime.now();
@@ -184,7 +182,7 @@ class HealthService {
     }
   }
 
-  static Future<List<double>> getLastSevenDaysCalories() async {
+  static Future<List<double>> getLast7DaysCalories() async {
     List<double> lastSevenDayCalories = [];
 
     try {

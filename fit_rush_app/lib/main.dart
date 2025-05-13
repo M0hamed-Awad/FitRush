@@ -19,7 +19,7 @@ class FitRushApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => TodayHealthCubit()..fetchTodayData()),
         BlocProvider(create: (context) => LastSevenDaysHealthCubit()..fetchWeekData()),
-        BlocProvider(create: (context) => HealthPermissionsCubit()..requestPermissions()),
+        BlocProvider(create: (context) => HealthPermissionsCubit()..requestPermissionsOnce()),
       ],
       child: MaterialApp(
         title: 'FitRush',
