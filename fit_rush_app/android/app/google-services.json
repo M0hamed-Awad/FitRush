@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "626090928458",
+    "project_id": "fitrushapp",
+    "storage_bucket": "fitrushapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:626090928458:android:61c05408b0b5b3de74b9b3",
+        "android_client_info": {
+          "package_name": "com.example.fit_rush_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2HAsDmLbdiVSkLm9LrCioT75_nC9mEMk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
