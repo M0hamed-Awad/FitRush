@@ -1,4 +1,4 @@
-import 'package:fit_rush_app/constants.dart';
+import 'package:fit_rush_app/styles/colors.dart';
 import 'package:fit_rush_app/widgets/profile/daily_goals_widget.dart';
 import 'package:fit_rush_app/widgets/profile/long_term_goals_widget.dart';
 import 'package:fit_rush_app/widgets/profile/user_data_widget.dart';
@@ -20,14 +20,14 @@ class ProfileScreenBody extends StatelessWidget {
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.w500,
-                color: kTextColorDark,
+                color: AppColors.kTextColorDark,
               ),
             ),
           ),
           SizedBox(height: 8),
           Center(
             child: CircleAvatar(
-              backgroundColor: kPrimaryColor,
+              backgroundColor: AppColors.kPrimaryColor,
               radius: 53,
               child: CircleAvatar(
                 radius: 50,
@@ -42,7 +42,7 @@ class ProfileScreenBody extends StatelessWidget {
           Divider(thickness: 2, height: 6),
           Text(
             "Long Term Goals",
-            style: TextStyle(fontSize: 18, color: kTextColorDark),
+            style: TextStyle(fontSize: 18, color: AppColors.kTextColorDark),
           ),
 
           LongTermGoalsWidget(),
@@ -50,14 +50,14 @@ class ProfileScreenBody extends StatelessWidget {
           Divider(thickness: 2, height: 6),
           Text(
             "Daily Goals",
-            style: TextStyle(fontSize: 18, color: kTextColorDark),
+            style: TextStyle(fontSize: 18, color: AppColors.kTextColorDark),
           ),
           DailyGoalsWidget(),
 
           Divider(thickness: 2, height: 6),
           Text(
             "Your Data",
-            style: TextStyle(fontSize: 18, color: kTextColorDark),
+            style: TextStyle(fontSize: 18, color: AppColors.kTextColorDark),
           ),
           UserDataWidget(),
         ],

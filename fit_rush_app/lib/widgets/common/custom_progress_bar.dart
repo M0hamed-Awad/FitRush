@@ -1,4 +1,4 @@
-import 'package:fit_rush_app/constants.dart';
+import 'package:fit_rush_app/styles/sizes.dart';
 import 'package:fit_rush_app/widgets/common/custom_percent_progress_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -16,10 +16,10 @@ class CustomProgressBar extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: _buildProgressBarTitle(),
+          padding: AppSizes.kPaddingH12,
+          child: _buildProgressBarTitle(context),
         ),
-        SizedBox(height: 4),
+        AppSizes.kSizeH4,
         _buildProgressBar(),
       ],
     );
@@ -29,14 +29,17 @@ class CustomProgressBar extends StatelessWidget {
     return CustomPercentProgressBar(percent: percent);
   }
 
-  Row _buildProgressBarTitle() {
+  Row _buildProgressBarTitle(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text("$title:", style: TextStyle(color: kTextColorDark)),
+        Text("$title:", style: Theme.of(context).textTheme.bodyLarge),
         Text(
           "${percent * 100}%",
-          style: TextStyle(color: kTextColorDark, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
         ),
       ],
     );

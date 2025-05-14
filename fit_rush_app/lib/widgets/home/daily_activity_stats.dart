@@ -1,5 +1,6 @@
 import 'package:fit_rush_app/cubits/today_health_cubit/today_health_cubit.dart';
 import 'package:fit_rush_app/cubits/today_health_cubit/today_health_cubit_states.dart';
+import 'package:fit_rush_app/styles/sizes.dart';
 import 'package:fit_rush_app/widgets/common/custom_loading_indicator.dart';
 import 'package:fit_rush_app/widgets/common/fail_widget.dart';
 import 'package:fit_rush_app/widgets/home/daily_stats_card.dart';
@@ -25,29 +26,30 @@ class DailyActivityStats extends StatelessWidget {
             onRetry: () => context.read<TodayHealthCubit>().fetchTodayData(),
           );
         } else if (state is TodayHealthLoaded) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 16,
-            children: [
-              _buildFirstRow(stepsCount: state.steps, calories: state.calories),
-              _buildSecondRow(
-                heartRate: state.heartRate,
-                distance: state.distance,
-              ),
-            ],
-          );
+          return _buildDataStatsCards(state);
         } else {
-          return const SizedBox.shrink();
+          return AppSizes.kEmptyWidget;
         }
       },
+    );
+  }
+
+  Column _buildDataStatsCards(TodayHealthLoaded state) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: AppSizes.kSpacing16,
+      children: [
+        _buildFirstRow(stepsCount: state.steps, calories: state.calories),
+        _buildSecondRow(heartRate: state.heartRate, distance: state.distance),
+      ],
     );
   }
 
   Row _buildFirstRow({required int stepsCount, required double calories}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      spacing: 8,
+      spacing: AppSizes.kSpacing8,
       children: [
         DailyStatsCard<int>(text: "Steps", data: stepsCount),
         DailyStatsCard<double>(text: "Calories", data: calories),
@@ -58,7 +60,7 @@ class DailyActivityStats extends StatelessWidget {
   Row _buildSecondRow({required double heartRate, required double distance}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      spacing: 8,
+      spacing: AppSizes.kSpacing8,
       children: [
         DailyStatsCard<double>(text: "BPM (avg)", data: heartRate),
         DailyStatsCard<double>(text: "Meters", data: distance),

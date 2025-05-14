@@ -1,4 +1,4 @@
-import 'package:fit_rush_app/constants.dart';
+import 'package:fit_rush_app/styles/colors.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +20,7 @@ class MiniWeekLineChart extends StatelessWidget {
       height: 80,
       child: LineChart(
         LineChartData(
-          backgroundColor: kBackgroundColor,
+          backgroundColor: AppColors.kLightGreyColor,
           maxY: maxY + 1000,
           minY: 0,
           lineBarsData: [_buildLineChartBarData()],
@@ -86,7 +86,7 @@ class MiniWeekLineChart extends StatelessWidget {
       ),
       isCurved: true,
       barWidth: 2,
-      color: kBlueColor,
+      color: AppColors.kBlueColor,
       dotData: FlDotData(show: true),
     );
   }
