@@ -1,4 +1,4 @@
-import 'package:fit_rush_app/constants.dart';
+import 'package:fit_rush_app/styles/colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomLoadingIndicator extends StatelessWidget {
@@ -8,7 +8,7 @@ class CustomLoadingIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircularProgressIndicator(
       backgroundColor: Colors.transparent,
-      color: kPrimaryColor,
+      color:  AppColors.kPrimaryColor,
       strokeWidth: 8,
       strokeCap: StrokeCap.round,
     );

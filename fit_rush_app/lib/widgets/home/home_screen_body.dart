@@ -1,4 +1,4 @@
-import 'package:fit_rush_app/constants.dart';
+import 'package:fit_rush_app/styles/sizes.dart';
 import 'package:fit_rush_app/widgets/common/custom_progress_bar.dart';
 import 'package:fit_rush_app/widgets/home/daily_activity_progress_rings.dart';
 import 'package:fit_rush_app/widgets/home/daily_activity_stats.dart';
@@ -14,7 +14,7 @@ class HomeScreenBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
-        padding: EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 64),
+        padding: AppSizes.kPadding8Bottom64,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 28,
@@ -34,7 +34,7 @@ class HomeScreenBody extends StatelessWidget {
             WeekActivitySummaryCard(),
 
             // Goal Overall Progress bar
-            _buildDailyGoalProgressBar(),
+            _buildDailyGoalProgressBar(context),
 
             // Daily Motivation Card
             DailyMotivationCard(),
@@ -48,23 +48,19 @@ class HomeScreenBody extends StatelessWidget {
     return CustomProgressBar(percent: 0.7, title: "Overall Progress");
   }
 
-  Widget _buildDailyGoalProgressBar() {
+  Widget _buildDailyGoalProgressBar(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 16),
+      margin: AppSizes.kMarginV16,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 8,
         children: [
           CustomProgressBar(percent: 0.9, title: "Daily Goal Progress"),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            padding: AppSizes.kPaddingH12,
             child: Text(
               "4500 / 5000",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: kTextColorDark,
-              ),
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
           ),
         ],

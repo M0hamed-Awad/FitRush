@@ -1,11 +1,12 @@
 import 'package:fit_rush_app/cubits/health_permissions_cubit/health_permissions_cubit.dart';
 import 'package:fit_rush_app/cubits/last_seven_days_health_cubit/last_seven_days_health_cubit.dart';
 import 'package:fit_rush_app/cubits/today_health_cubit/today_health_cubit.dart';
+import 'package:fit_rush_app/styles/themes.dart';
 import 'package:fit_rush_app/views/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const FitRushApp());
 }
@@ -18,15 +19,20 @@ class FitRushApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => TodayHealthCubit()..fetchTodayData()),
-        BlocProvider(create: (context) => LastSevenDaysHealthCubit()..fetchWeekData()),
-        BlocProvider(create: (context) => HealthPermissionsCubit()..requestPermissions()),
+        BlocProvider(
+          create: (context) => LastSevenDaysHealthCubit()..fetchWeekData(),
+        ),
+        BlocProvider(
+          create:
+              (context) => HealthPermissionsCubit()..requestPermissionsOnce(),
+        ),
       ],
       child: MaterialApp(
         title: 'FitRush',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        ),
+        theme: AppThemes.lightTheme,
+        darkTheme: AppThemes.darkTheme,
+        themeMode: ThemeMode.system,
         home: HomeScreen(),
       ),
     );

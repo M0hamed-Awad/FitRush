@@ -9,8 +9,8 @@ class LastSevenDaysHealthCubit extends Cubit<LastSevenDaysHealthState> {
     emit(LastSevenDaysHealthLoading());
 
     try {
-      final steps = await HealthService.getLastSevenDaysSteps();
-      final calories = await HealthService.getLastSevenDaysCalories();
+      final steps = await HealthService.getLast7DaysSteps();
+      final calories = await HealthService.getLast7DaysCalories();
 
       emit(LastSevenDaysHealthLoaded(steps: steps, calories: calories));
     } catch (e) {

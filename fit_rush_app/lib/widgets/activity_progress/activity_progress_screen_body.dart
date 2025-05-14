@@ -1,6 +1,8 @@
-import 'package:fit_rush_app/constants.dart';
 import 'package:fit_rush_app/cubits/last_seven_days_health_cubit/last_seven_days_health_cubit.dart';
 import 'package:fit_rush_app/cubits/last_seven_days_health_cubit/last_seven_days_health_cubit_states.dart';
+import 'package:fit_rush_app/styles/colors.dart';
+import 'package:fit_rush_app/styles/sizes.dart';
+import 'package:fit_rush_app/styles/styles.dart';
 import 'package:fit_rush_app/widgets/activity_progress/week_chart.dart';
 import 'package:fit_rush_app/widgets/common/custom_loading_indicator.dart';
 import 'package:fit_rush_app/widgets/common/fail_widget.dart';
@@ -23,78 +25,94 @@ class ActivityProgressScreenBody extends StatelessWidget {
                 () => context.read<LastSevenDaysHealthCubit>().fetchWeekData(),
           );
         } else if (state is LastSevenDaysHealthLoaded) {
-          return _buildWeekChartBody(lastSevenDaysSteps: state.steps);
+          return _buildWeekChartBody(
+            lastSevenDaysSteps: state.steps,
+            context: context,
+          );
         } else {
-          return const SizedBox.shrink();
+          return AppSizes.kEmptyWidget;
         }
       },
     );
   }
 
-  Padding _buildWeekChartBody({required List<int> lastSevenDaysSteps}) {
+  Padding _buildWeekChartBody({
+    required List<int> lastSevenDaysSteps,
+    required BuildContext context,
+  }) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: AppSizes.kPadding8,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _buildActivityDateText(),
-            _buildActivityTotalAmountRow(),
-            const SizedBox(height: 24),
+            _buildActivityDateText(context),
+            _buildActivityTotalAmountRow(context),
+            AppSizes.kSizeH24,
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: AppSizes.kPadding8,
               child: WeekChart(lastSevenDaysSteps: lastSevenDaysSteps),
             ),
-            _buildLastSevenDaysActivities(),
+            _buildLastSevenDaysActivities(context),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildLastSevenDaysActivities() {
+  Widget _buildLastSevenDaysActivities(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 16),
-      child: Column(spacing: 8, children: _buildLastSevenDaysList()),
+      margin: AppSizes.kMarginTop16,
+      child: Column(
+        spacing: AppSizes.kSpacing8,
+        children: _buildLastSevenDaysList(context),
+      ),
     );
   }
 
-  List<Widget> _buildLastSevenDaysList() {
+  List<Widget> _buildLastSevenDaysList(BuildContext context) {
     return [
       _buildDayActivityCard(
         dateString: "Monday, 5 May",
         totalAmount: 0,
         dataType: "Steps",
+        context: context,
       ),
       _buildDayActivityCard(
         dateString: "Tuesday, 6 May",
         totalAmount: 164,
         dataType: "Steps",
+        context: context,
       ),
       _buildDayActivityCard(
         dateString: "Wednesday, 7 May",
         totalAmount: 4,
         dataType: "Steps",
+        context: context,
       ),
       _buildDayActivityCard(
         dateString: "Thursday, 8 May",
         totalAmount: 4480,
         dataType: "Steps",
+        context: context,
       ),
       _buildDayActivityCard(
         dateString: "Friday, 9 May",
         totalAmount: 402,
         dataType: "Steps",
+        context: context,
       ),
       _buildDayActivityCard(
         dateString: "Saturday, 10 May",
         totalAmount: 389,
         dataType: "Steps",
+        context: context,
       ),
       _buildDayActivityCard(
         dateString: "Sunday, 11 May",
         totalAmount: 139,
         dataType: "Steps",
+        context: context,
       ),
     ];
   }
@@ -103,17 +121,18 @@ class ActivityProgressScreenBody extends StatelessWidget {
     required String dateString,
     required int totalAmount,
     required String dataType,
+    required BuildContext context,
   }) {
     return Align(
       alignment: Alignment.centerLeft,
       child: SizedBox(
         width: double.infinity,
         child: Card(
-          color: kSecondaryColor,
           child: _buildDayActivityCardBody(
             dateString: dateString,
             totalAmount: totalAmount,
             dataType: dataType,
+            context: context,
           ),
         ),
       ),
@@ -124,62 +143,45 @@ class ActivityProgressScreenBody extends StatelessWidget {
     required String dateString,
     required int totalAmount,
     required String dataType,
+    required BuildContext context,
   }) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: AppSizes.kPadding16,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 4,
+        spacing: AppSizes.kSpacing4,
         children: [
-          Text(
-            dateString,
-            style: TextStyle(
-              color: Colors.grey[500],
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-            ),
-          ),
+          Text(dateString, style: AppTextStyles.kActivityTextDate),
           Text(
             "$totalAmount $dataType",
-            style: TextStyle(
-              color: kTextColorDark,
-              fontWeight: FontWeight.w600,
-              fontSize: 18,
-            ),
+            style: AppTextStyles.kActivityTextData,
           ),
         ],
       ),
     );
   }
 
-  Row _buildActivityTotalAmountRow() {
+  Row _buildActivityTotalAmountRow(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      spacing: 8,
+      spacing: AppSizes.kSpacing8,
       children: [
-        Icon(Icons.directions_run_rounded, color: kBlueColor),
+        Icon(Icons.directions_run_rounded, color: AppColors.kBlueColor),
         Text(
           "5,651 Steps",
           style: TextStyle(
-            fontWeight: FontWeight.w400,
+            fontWeight: FontWeight.w300,
             fontSize: 12,
-            color: Colors.grey,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
       ],
     );
   }
 
-  Text _buildActivityDateText() {
-    return Text(
-      "5-11 May",
-      style: TextStyle(
-        fontWeight: FontWeight.w600,
-        fontSize: 16,
-        color: kTextColorDark,
-      ),
-    );
+  Text _buildActivityDateText(BuildContext context) {
+    return Text("5-11 May", style: Theme.of(context).textTheme.bodyLarge);
   }
 }

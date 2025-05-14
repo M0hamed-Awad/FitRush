@@ -1,7 +1,8 @@
-import 'package:fit_rush_app/constants.dart';
 import 'package:fit_rush_app/cubits/last_seven_days_health_cubit/last_seven_days_health_cubit.dart';
 import 'package:fit_rush_app/cubits/last_seven_days_health_cubit/last_seven_days_health_cubit_states.dart';
 import 'package:fit_rush_app/helper/navigation_helper.dart';
+import 'package:fit_rush_app/styles/colors.dart';
+import 'package:fit_rush_app/styles/sizes.dart';
 import 'package:fit_rush_app/views/screens/activity_progress_screen.dart';
 import 'package:fit_rush_app/widgets/common/custom_loading_indicator.dart';
 import 'package:fit_rush_app/widgets/common/fail_widget.dart';
@@ -33,7 +34,7 @@ class _WeekActivitySummaryCardState extends State<WeekActivitySummaryCard> {
         } else if (state is LastSevenDaysHealthLoaded) {
           return _buildWeekActivitySummaryCard(weekSteps: state.steps);
         } else {
-          return const SizedBox.shrink();
+          return AppSizes.kEmptyWidget;
         }
       },
     );
@@ -43,7 +44,6 @@ class _WeekActivitySummaryCardState extends State<WeekActivitySummaryCard> {
     return GestureDetector(
       onTap: _handleOnCardClicked,
       child: Card(
-        color: kSecondaryColor,
         child: _buildWeekActivitySummaryCardBody(weekSteps: weekSteps),
       ),
     );
@@ -58,7 +58,7 @@ class _WeekActivitySummaryCardState extends State<WeekActivitySummaryCard> {
 
   Widget _buildWeekActivitySummaryCardBody({required List<int> weekSteps}) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: AppSizes.kPadding16,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 8,
@@ -68,7 +68,7 @@ class _WeekActivitySummaryCardState extends State<WeekActivitySummaryCard> {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: kTextColorDark,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           Text(

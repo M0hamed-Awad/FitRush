@@ -1,4 +1,4 @@
-import 'package:fit_rush_app/constants.dart';
+import 'package:fit_rush_app/styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
@@ -13,8 +13,8 @@ class CustomPercentProgressBar extends StatelessWidget {
       lineHeight: 16,
       animation: true,
       barRadius: Radius.circular(24),
-      progressColor: kPrimaryColor,
-      backgroundColor: kSecondaryColor,
+      progressColor: AppColors.kPrimaryColor,
+      backgroundColor: AppColors.kSecondaryColorLight,
     );
   }
 }
