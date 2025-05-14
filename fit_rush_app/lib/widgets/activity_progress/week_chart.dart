@@ -1,4 +1,4 @@
-import 'package:fit_rush_app/constants.dart';
+import 'package:fit_rush_app/styles/colors.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +18,7 @@ class WeekChart extends StatelessWidget {
       padding: EdgeInsets.only(left: 20),
       child: BarChart(
         BarChartData(
-          backgroundColor: kSecondaryColor,
+          backgroundColor: AppColors.kLightGreyColor,
           alignment: BarChartAlignment.spaceAround,
           maxY: maxSteps.toDouble() + 1000,
           barGroups: _buildBardGroupsList(),
@@ -56,7 +56,7 @@ class WeekChart extends StatelessWidget {
             return Text(
               (value == 0) ? "" : value.toInt().toString(),
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 8, color: kBlueColor),
+              style: TextStyle(fontSize: 8, color: AppColors.kBlueColor),
             );
           }
           return SizedBox.shrink();
@@ -98,13 +98,13 @@ class WeekChart extends StatelessWidget {
         HorizontalLine(
           y: (maxSteps + 100).toDouble(),
           dashArray: [6, 4],
-          color: kBlueColor,
+          color: AppColors.kBlueColor,
           strokeWidth: 1,
           label: HorizontalLineLabel(
             show: true,
             alignment: Alignment.topCenter,
             labelResolver: (_) => '$maxSteps',
-            style: TextStyle(fontSize: 10, color: kPrimaryColor),
+            style: TextStyle(fontSize: 10, color: AppColors.kPrimaryColor),
           ),
         ),
       ],
@@ -118,7 +118,7 @@ class WeekChart extends StatelessWidget {
         barRods: [
           BarChartRodData(
             toY: lastSevenDaysSteps[index].toDouble(),
-            color: kBlueColor,
+            color: AppColors.kBlueColor,
             borderRadius: BorderRadius.circular(4),
             width: 14,
             borderSide: BorderSide.none,

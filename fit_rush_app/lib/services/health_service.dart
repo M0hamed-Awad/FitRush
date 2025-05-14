@@ -6,15 +6,15 @@ import 'package:health/health.dart';
 class HealthService {
   static final Health _healthInstance = Health();
 
-  static Future<void> requestHealthPermissions() async {
+  static Future<bool> requestHealthPermissions() async {
     // Configure Health Package
     await _healthInstance.configure();
 
     // Check if Permissions Granted
-    await _checkForPermissions();
+    return await _checkForPermissions();
   }
 
-  static Future<void> _checkForPermissions() async {
+  static Future<bool> _checkForPermissions() async {
     List<HealthDataType> types = [
       HealthDataType.STEPS,
       HealthDataType.ACTIVE_ENERGY_BURNED,
@@ -41,10 +41,13 @@ class HealthService {
         permissions: permissions,
       );
       debugPrint('[PERMISSIONS] Authorized: $authorized');
+      return authorized;
     } else {
       debugPrint('[PERMISSIONS] Already granted');
+      return true;
     }
   }
+
   static Future<int?> getTodaysSteps() async {
     try {
       final now = DateTime.now();
@@ -149,7 +152,7 @@ class HealthService {
     return (DateTime(now.year, now.month, now.day), now);
   }
 
-  static Future<List<int>> getLastSevenDaysSteps() async {
+  static Future<List<int>> getLast7DaysSteps() async {
     List<int> lastSevenDaysSteps = [];
 
     try {
@@ -179,7 +182,7 @@ class HealthService {
     }
   }
 
-  static Future<List<double>> getLastSevenDaysCalories() async {
+  static Future<List<double>> getLast7DaysCalories() async {
     List<double> lastSevenDayCalories = [];
 
     try {

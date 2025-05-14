@@ -1,8 +1,14 @@
-import 'package:fit_rush_app/constants.dart';
+import 'package:fit_rush_app/cubits/health_permissions_cubit/health_permissions_cubit.dart';
+import 'package:fit_rush_app/cubits/health_permissions_cubit/health_permissions_cubit_states.dart';
 import 'package:fit_rush_app/helper/navigation_helper.dart';
+import 'package:fit_rush_app/styles/colors.dart';
+import 'package:fit_rush_app/styles/sizes.dart';
 import 'package:fit_rush_app/views/screens/profile_screen.dart';
+import 'package:fit_rush_app/widgets/common/custom_loading_indicator.dart';
+import 'package:fit_rush_app/widgets/common/fail_widget.dart';
 import 'package:fit_rush_app/widgets/home/home_screen_body.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,20 +31,50 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kBackgroundColor,
       appBar: AppBar(
-        backgroundColor: kBackgroundColor,
         title: Image(
           image: AssetImage("assets/images/Logo-V2-red.png"),
           width: 40,
           height: 40,
         ),
-        titleSpacing: 16,
       ),
       floatingActionButton: _buildFab(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: _buildBottomNavBar(),
-      body: HomeScreenBody(),
+      body: _buildHomeScreenBody(),
+    );
+  }
+
+  BlocBuilder<HealthPermissionsCubit, HealthPermissionsState>
+  _buildHomeScreenBody() {
+    return BlocBuilder<HealthPermissionsCubit, HealthPermissionsState>(
+      builder: (context, state) {
+        if (state is HealthPermissionsLoading) {
+          return Center(child: CustomLoadingIndicator());
+        } else if (state is HealthPermissionsDenied) {
+          return _buildOnPermissionsDeniedWidget(state, context);
+        } else if (state is HealthPermissionsGranted) {
+          return HomeScreenBody();
+        } else {
+          return SizedBox.shrink();
+        }
+      },
+    );
+  }
+
+  Center _buildOnPermissionsDeniedWidget(
+    HealthPermissionsDenied state,
+    BuildContext context,
+  ) {
+    return Center(
+      child: FailWidget(
+        errorMessage: "Permission denied: ${state.errorMessage}",
+        onRetry: () {
+          BlocProvider.of<HealthPermissionsCubit>(
+            context,
+          ).requestPermissionsOnce();
+        },
+      ),
     );
   }
 
@@ -47,9 +83,9 @@ class _HomeScreenState extends State<HomeScreen> {
       onPressed: () {
         // Handle FAB press
       },
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-      backgroundColor: kPrimaryColor,
-      foregroundColor: kSecondaryColor,
+      shape: RoundedRectangleBorder(borderRadius: AppSizes.kBorderRadius40),
+      backgroundColor: AppColors.kPrimaryColor,
+      foregroundColor: AppColors.kSecondaryColorLight,
       child: Icon(Icons.add_rounded, size: 32),
     );
   }
@@ -58,7 +94,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return BottomAppBar(
       shape: CircularNotchedRectangle(),
       notchMargin: 8,
-      color: kSecondaryColor,
       child: _buildBottomNavBarBody(),
     );
   }
@@ -68,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         _buildBottomNavItem(Icons.home_rounded, "Home", 0),
-        SizedBox(width: 40), // Space for the FAB
+        AppSizes.kSizeW40, // Space for the FAB
         _buildBottomNavItem(Icons.person_rounded, "Profile", 1),
       ],
     );
@@ -87,14 +122,19 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Icon(
           icon,
-          color: _selectedIndex == index ? kPrimaryColor : kTextColorDark,
+          color:
+              _selectedIndex == index
+                  ? AppColors.kPrimaryColor
+                  : Theme.of(context).colorScheme.onSurface,
         ),
-        SizedBox(height: 4),
+        AppSizes.kSizeH4,
         Text(
           label,
           style: TextStyle(
             color:
-                _selectedIndex == index ? kPrimaryColor : kTextColorDark,
+                _selectedIndex == index
+                    ? AppColors.kPrimaryColor
+                    : Theme.of(context).colorScheme.onSurface,
             fontSize: 12,
             fontWeight: FontWeight.w500,
           ),

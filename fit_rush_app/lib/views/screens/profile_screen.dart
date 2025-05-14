@@ -1,4 +1,3 @@
-import 'package:fit_rush_app/constants.dart';
 import 'package:fit_rush_app/widgets/profile/profile_screen_body.dart';
 import 'package:flutter/material.dart';
 
@@ -9,9 +8,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: kBackgroundColor,
         actions: [Icon(Icons.settings_rounded)],
-        actionsPadding: EdgeInsets.only(right: 16),
       ),
       body: ProfileScreenBody(),
     );
