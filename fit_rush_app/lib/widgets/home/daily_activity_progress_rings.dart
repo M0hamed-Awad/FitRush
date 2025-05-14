@@ -1,6 +1,8 @@
-import 'package:fit_rush_app/constants.dart';
 import 'package:fit_rush_app/cubits/today_health_cubit/today_health_cubit.dart';
 import 'package:fit_rush_app/cubits/today_health_cubit/today_health_cubit_states.dart';
+import 'package:fit_rush_app/styles/colors.dart';
+import 'package:fit_rush_app/styles/sizes.dart';
+import 'package:fit_rush_app/styles/styles.dart';
 import 'package:fit_rush_app/widgets/common/custom_loading_indicator.dart';
 import 'package:fit_rush_app/widgets/common/fail_widget.dart';
 import 'package:fit_rush_app/widgets/home/fitness_rings.dart';
@@ -32,9 +34,10 @@ class _DailyActivityProgressRingsState
           return _buildDailyProgressRings(
             steps: state.steps,
             calories: state.calories,
+            context: context,
           );
         } else {
-          return const SizedBox.shrink();
+          return AppSizes.kEmptyWidget;
         }
       },
     );
@@ -43,56 +46,49 @@ class _DailyActivityProgressRingsState
   Container _buildDailyProgressRings({
     required int steps,
     required double calories,
+    required BuildContext context,
   }) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 32),
+      margin: AppSizes.kMarginV32,
       child: Column(
-        spacing: 16,
+        spacing: AppSizes.kSpacing16,
         children: [
           FitnessRings(steps: steps, calories: calories),
-          _buildRingsIconsRow(),
+          _buildRingsIconsRow(context),
         ],
       ),
     );
   }
 
-  Row _buildRingsIconsRow() {
+  Row _buildRingsIconsRow(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
-      spacing: 32,
-      children: [_buildStepsIconRow(), _buildCaloriesIconRow()],
+      spacing: AppSizes.kSpacing32,
+      children: [_buildStepsIconRow(context), _buildCaloriesIconRow(context)],
     );
   }
 
-  Row _buildCaloriesIconRow() {
+  Row _buildCaloriesIconRow(BuildContext context) {
     return Row(
       children: [
-        Icon(Icons.local_fire_department_rounded, color: kAccentOrangeColor),
+        Icon(
+          Icons.local_fire_department_rounded,
+          color: AppColors.kAccentOrangeColor,
+        ),
         Text(
           "Calories",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: kTextColorDark,
-          ),
+          style:  AppTextStyles.kRingsDataText,
         ),
       ],
     );
   }
 
-  Row _buildStepsIconRow() {
+  Row _buildStepsIconRow(BuildContext context) {
     return Row(
       children: [
-        Icon(Icons.directions_run_rounded, color: kBlueColor),
-        Text(
-          "Steps",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: kTextColorDark,
-          ),
-        ),
+        Icon(Icons.directions_run_rounded, color: AppColors.kBlueColor),
+        Text("Steps", style: AppTextStyles.kRingsDataText),
       ],
     );
   }

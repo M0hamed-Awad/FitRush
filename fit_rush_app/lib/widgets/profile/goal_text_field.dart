@@ -1,4 +1,4 @@
-import 'package:fit_rush_app/constants.dart';
+import 'package:fit_rush_app/styles/colors.dart';
 import 'package:flutter/material.dart';
 
 class GoalTextField extends StatefulWidget {
@@ -38,17 +38,17 @@ class _GoalTextFieldState extends State<GoalTextField> {
         floatingLabelBehavior: FloatingLabelBehavior.always,
         labelText: widget.label,
         floatingLabelStyle: TextStyle(
-          color: isFocused ? kPrimaryColor : kGreyColor,
+          color: isFocused ?  AppColors.kPrimaryColor :  AppColors.kGreyColor,
           fontSize: 18,
           fontWeight: FontWeight.w700,
         ),
         hintText: "${widget.data}",
         contentPadding: EdgeInsets.all(16),
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: kGreyColor, width: 2),
+          borderSide: BorderSide(color:  AppColors.kGreyColor, width: 2),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: kPrimaryColor, width: 2),
+          borderSide: BorderSide(color:  AppColors.kPrimaryColor, width: 2),
         ),
       ),
     );

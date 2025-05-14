@@ -1,4 +1,5 @@
-import 'package:fit_rush_app/constants.dart';
+import 'package:fit_rush_app/styles/colors.dart';
+import 'package:fit_rush_app/styles/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
@@ -42,7 +43,7 @@ class FitnessRings extends StatelessWidget {
       percent: caloriesPercent,
       animation: true,
       circularStrokeCap: CircularStrokeCap.round,
-      progressColor: kAccentOrangeColor,
+      progressColor: AppColors.kAccentOrangeColor,
       backgroundColor: const Color.fromRGBO(255, 106, 43, 0.1),
     );
   }
@@ -54,7 +55,7 @@ class FitnessRings extends StatelessWidget {
       percent: stepsPercent,
       animation: true,
       circularStrokeCap: CircularStrokeCap.round,
-      progressColor: kBlueColor,
+      progressColor: AppColors.kBlueColor,
       backgroundColor: const Color.fromRGBO(33, 150, 243, 0.1),
     );
   }
@@ -63,13 +64,13 @@ class FitnessRings extends StatelessWidget {
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        spacing: 8,
+        spacing: AppSizes.kSpacing8,
         children: [
           Text(
             "$steps",
             style: TextStyle(
               fontSize: 28,
-              color: kBlueColor,
+              color: AppColors.kBlueColor,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -77,7 +78,7 @@ class FitnessRings extends StatelessWidget {
             "$calories",
             style: TextStyle(
               fontSize: 22,
-              color: kAccentOrangeColor,
+              color: AppColors.kAccentOrangeColor,
               fontWeight: FontWeight.bold,
             ),
           ),

@@ -1,4 +1,5 @@
-import 'package:fit_rush_app/constants.dart';
+import 'package:fit_rush_app/styles/sizes.dart';
+import 'package:fit_rush_app/styles/styles.dart';
 import 'package:flutter/material.dart';
 
 class DailyStatsCard<T extends num> extends StatelessWidget {
@@ -9,41 +10,25 @@ class DailyStatsCard<T extends num> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _buildCardBody();
+    return _buildCardBody(context);
   }
 
-  Widget _buildCardBody() {
+  Widget _buildCardBody(BuildContext context) {
     return Expanded(
       child: Card(
-        color: kSecondaryColor,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: _buildCardBodyColumn(),
+          padding: AppSizes.kPaddingH16V8,
+          child: _buildCardBodyColumn(context),
         ),
       ),
     );
   }
 
-  Column _buildCardBodyColumn() {
+  Column _buildCardBodyColumn(BuildContext context) {
     return Column(
       children: [
-        Text(
-          _formatValue(data),
-          // _formatValue(),
-          style: TextStyle(
-            color: kPrimaryColor,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(
-          text,
-          style: TextStyle(
-            color: kTextColorDark,
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        Text(_formatValue(data), style: AppTextStyles.kStatsTextTitle),
+        Text(text, style: Theme.of(context).textTheme.bodyMedium),
       ],
     );
   }

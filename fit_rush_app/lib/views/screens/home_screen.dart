@@ -1,7 +1,8 @@
-import 'package:fit_rush_app/constants.dart';
 import 'package:fit_rush_app/cubits/health_permissions_cubit/health_permissions_cubit.dart';
 import 'package:fit_rush_app/cubits/health_permissions_cubit/health_permissions_cubit_states.dart';
 import 'package:fit_rush_app/helper/navigation_helper.dart';
+import 'package:fit_rush_app/styles/colors.dart';
+import 'package:fit_rush_app/styles/sizes.dart';
 import 'package:fit_rush_app/views/screens/profile_screen.dart';
 import 'package:fit_rush_app/widgets/common/custom_loading_indicator.dart';
 import 'package:fit_rush_app/widgets/common/fail_widget.dart';
@@ -30,15 +31,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kBackgroundColor,
       appBar: AppBar(
-        backgroundColor: kBackgroundColor,
         title: Image(
           image: AssetImage("assets/images/Logo-V2-red.png"),
           width: 40,
           height: 40,
         ),
-        titleSpacing: 16,
       ),
       floatingActionButton: _buildFab(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -85,9 +83,9 @@ class _HomeScreenState extends State<HomeScreen> {
       onPressed: () {
         // Handle FAB press
       },
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-      backgroundColor: kPrimaryColor,
-      foregroundColor: kSecondaryColor,
+      shape: RoundedRectangleBorder(borderRadius: AppSizes.kBorderRadius40),
+      backgroundColor: AppColors.kPrimaryColor,
+      foregroundColor: AppColors.kSecondaryColorLight,
       child: Icon(Icons.add_rounded, size: 32),
     );
   }
@@ -96,7 +94,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return BottomAppBar(
       shape: CircularNotchedRectangle(),
       notchMargin: 8,
-      color: kSecondaryColor,
       child: _buildBottomNavBarBody(),
     );
   }
@@ -106,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         _buildBottomNavItem(Icons.home_rounded, "Home", 0),
-        SizedBox(width: 40), // Space for the FAB
+        AppSizes.kSizeW40, // Space for the FAB
         _buildBottomNavItem(Icons.person_rounded, "Profile", 1),
       ],
     );
@@ -125,13 +122,19 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Icon(
           icon,
-          color: _selectedIndex == index ? kPrimaryColor : kTextColorDark,
+          color:
+              _selectedIndex == index
+                  ? AppColors.kPrimaryColor
+                  : Theme.of(context).colorScheme.onSurface,
         ),
-        SizedBox(height: 4),
+        AppSizes.kSizeH4,
         Text(
           label,
           style: TextStyle(
-            color: _selectedIndex == index ? kPrimaryColor : kTextColorDark,
+            color:
+                _selectedIndex == index
+                    ? AppColors.kPrimaryColor
+                    : Theme.of(context).colorScheme.onSurface,
             fontSize: 12,
             fontWeight: FontWeight.w500,
           ),
