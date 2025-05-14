@@ -2,8 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:fit_rush_app/database/converters/user_goal_type_converter.dart';
 
 class UsersTable extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  TextColumn get uid => text();
+  TextColumn get uid => text()(); // Firebase UID
   TextColumn get name => text()();
   IntColumn get age => integer().nullable()();
   TextColumn get gender => text().nullable()();
@@ -11,4 +10,7 @@ class UsersTable extends Table {
   RealColumn get weight => real().nullable()();
   TextColumn get longTermGoal => text().map(const UserGoalTypeConverter())();
   TextColumn get dailyGoal => text().map(const UserGoalTypeConverter())();
+
+  @override
+  Set<Column> get primaryKey => {uid};
 }
