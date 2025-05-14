@@ -9,7 +9,6 @@ class SignUpScreenBody extends StatefulWidget {
 
 class _SignUpScreenBodyState extends State<SignUpScreenBody> {
   int _currentStep = 0;
-
   final _formKey = GlobalKey<FormState>();
 
   final _nameController = TextEditingController();
@@ -23,39 +22,245 @@ class _SignUpScreenBodyState extends State<SignUpScreenBody> {
   bool _showPassword = false;
   bool _showConfirmPassword = false;
 
-  // UI Helpers
-  InputDecoration _inputDecoration(String hint, IconData icon) {
-    return InputDecoration(
-      prefixIcon: Icon(icon, color: Colors.white),
-      hintText: hint,
-      hintStyle: TextStyle(color: Colors.white70),
-      filled: true,
-      fillColor: Colors.black.withOpacity(0.2),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF121416),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              const Icon(Icons.arrow_back_ios, color: Colors.white),
+              const SizedBox(height: 12),
+              Center(
+                child: Image.network(
+                  'https://i.ibb.co/k2K0hS4J/test4.png',
+                  width: 60,
+                ),
+              ),
+              const SizedBox(height: 16),
+              _buildTitleText("Create an Account"),
+              _buildSubtitleText("Help us finish setting up your account."),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  _stepIndicator("Account Information", 0),
+                  _stepIndicator("Biodata", 1),
+                ],
+              ),
+              const SizedBox(height: 24),
+              _currentStep == 0 ? _buildAccountStep() : _buildBioDataStep(),
+              const SizedBox(height: 24),
+              _buildSubmitButton(),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
-  InputDecoration _passwordInput(
-    String hint,
-    bool visible,
-    VoidCallback toggle,
-  ) {
-    return InputDecoration(
-      prefixIcon: Icon(Icons.lock, color: Colors.white),
-      hintText: hint,
-      hintStyle: TextStyle(color: Colors.white70),
-      suffixIcon: IconButton(
-        icon: Icon(
-          visible ? Icons.visibility : Icons.visibility_off,
-          color: Colors.white,
+  Widget _buildTitleText(String text) => Center(
+        child: Text(
+          text,
+          style: const TextStyle(
+              fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        onPressed: toggle,
-      ),
-      filled: true,
-      fillColor: Colors.black.withOpacity(0.2),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      );
+
+  Widget _buildSubtitleText(String text) => Center(
+        child: Text(
+          text,
+          style: const TextStyle(color: Color(0xFFC0C0C0)),
+        ),
+      );
+
+  Widget _buildAccountStep() => Column(
+        children: [
+          _buildTextField(
+            controller: _nameController,
+            hint: "Full name",
+            icon: Icons.person,
+            validator: (val) => val == null || val.isEmpty ? "Name required" : null,
+          ),
+          const SizedBox(height: 16),
+          _buildTextField(
+            controller: _emailController,
+            hint: "Email address",
+            icon: Icons.email,
+            validator: (val) => val == null || !val.contains('@')
+                ? "Valid email required"
+                : null,
+          ),
+          const SizedBox(height: 16),
+          _buildPasswordField(
+            controller: _passwordController,
+            hint: "Password",
+            visible: _showPassword,
+            toggle: () => setState(() => _showPassword = !_showPassword),
+          ),
+          const SizedBox(height: 16),
+          _buildPasswordField(
+            controller: _confirmPasswordController,
+            hint: "Confirm Password",
+            visible: _showConfirmPassword,
+            toggle: () => setState(() => _showConfirmPassword = !_showConfirmPassword),
+            validator: (val) => val == _passwordController.text
+                ? null
+                : "Passwords don't match",
+          ),
+        ],
+      );
+
+  Widget _buildBioDataStep() => Column(
+        children: [
+          GestureDetector(
+            onTap: _pickDate,
+            child: AbsorbPointer(
+              child: _buildTextField(
+                hint: _selectedDate != null
+                    ? "${_selectedDate!.toLocal()}".split(' ')[0]
+                    : "Date of Birth",
+                icon: Icons.calendar_today,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          _buildTextField(
+            controller: _heightController,
+            hint: "Height (cm)",
+            icon: Icons.height,
+            validator: (val) => val == null || val.isEmpty ? "Height required" : null,
+          ),
+          const SizedBox(height: 16),
+          _buildTextField(
+            controller: _weightController,
+            hint: "Weight (kg)",
+            icon: Icons.monitor_weight,
+            validator: (val) => val == null || val.isEmpty ? "Weight required" : null,
+          ),
+        ],
+      );
+
+  Widget _buildTextField({
+    TextEditingController? controller,
+    required String hint,
+    required IconData icon,
+    FormFieldValidator<String>? validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: _inputDecoration(hint, icon),
+      style: const TextStyle(color: Colors.white),
+      validator: validator,
     );
   }
+
+  Widget _buildPasswordField({
+    required TextEditingController controller,
+    required String hint,
+    required bool visible,
+    required VoidCallback toggle,
+    FormFieldValidator<String>? validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      obscureText: !visible,
+      decoration: _passwordInput(hint, visible, toggle),
+      style: const TextStyle(color: Colors.white),
+      validator: validator ??
+          (val) => val != null && val.length >= 6
+              ? null
+              : "Minimum 6 characters",
+    );
+  }
+
+  Widget _stepIndicator(String label, int index) {
+    final isActive = _currentStep == index;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => setState(() => _currentStep = index),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 10,
+                  backgroundColor:
+                      isActive ? const Color(0xFFF06500) : Colors.grey,
+                  child: Text(
+                    "${index + 1}",
+                    style: const TextStyle(fontSize: 12, color: Colors.white),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: isActive ? const Color(0xFFF06500) : Colors.grey,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Container(
+              height: 2,
+              color: isActive ? const Color(0xFFF06500) : Colors.grey,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSubmitButton() => ElevatedButton(
+        onPressed: () {
+          if (_currentStep == 0) {
+            setState(() => _currentStep = 1);
+          } else {
+            _submitSignup();
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFFF06500),
+          minimumSize: const Size(double.infinity, 50),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6),
+          ),
+        ),
+        child: Text(
+          _currentStep == 0 ? "Next" : "Sign Up",
+          style: const TextStyle(color: Colors.white),
+        ),
+      );
+
+  InputDecoration _inputDecoration(String hint, IconData icon) => InputDecoration(
+        prefixIcon: Icon(icon, color: Colors.white),
+        hintText: hint,
+        hintStyle: const TextStyle(color: Colors.white70),
+        filled: true,
+        fillColor: Colors.black.withOpacity(0.2),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      );
+
+  InputDecoration _passwordInput(String hint, bool visible, VoidCallback toggle) =>
+      InputDecoration(
+        prefixIcon: const Icon(Icons.lock, color: Colors.white),
+        hintText: hint,
+        hintStyle: const TextStyle(color: Colors.white70),
+        suffixIcon: IconButton(
+          icon: Icon(
+            visible ? Icons.visibility : Icons.visibility_off,
+            color: Colors.white,
+          ),
+          onPressed: toggle,
+        ),
+        filled: true,
+        fillColor: Colors.black.withOpacity(0.2),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      );
 
   Future<void> _pickDate() async {
     final picked = await showDatePicker(
@@ -64,12 +269,7 @@ class _SignUpScreenBodyState extends State<SignUpScreenBody> {
       firstDate: DateTime(1950),
       lastDate: DateTime.now(),
     );
-
-    if (picked != null) {
-      setState(() {
-        _selectedDate = picked;
-      });
-    }
+    if (picked != null) setState(() => _selectedDate = picked);
   }
 
   Future<void> _submitSignup() async {
@@ -88,17 +288,20 @@ class _SignUpScreenBodyState extends State<SignUpScreenBody> {
       final userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
 
+      final uid = userCredential.user!.uid;
+      // Insert user data locally using Drift
+
       await FirebaseFirestore.instance
           .collection('users')
           .doc(userCredential.user!.uid)
           .set({
-            'name': _nameController.text.trim(),
-            'email': email,
-            'dob': _selectedDate?.toIso8601String() ?? "",
-            'height': _heightController.text.trim(),
-            'weight': _weightController.text.trim(),
-            'createdAt': Timestamp.now(),
-          });
+        'name': _nameController.text.trim(),
+        'email': email,
+        'dob': _selectedDate?.toIso8601String() ?? "",
+        'height': _heightController.text.trim(),
+        'weight': _weightController.text.trim(),
+        'createdAt': Timestamp.now(),
+      });
 
       _showMessage("Signup successful!");
     } catch (e) {
@@ -106,215 +309,6 @@ class _SignUpScreenBodyState extends State<SignUpScreenBody> {
     }
   }
 
-  void _showMessage(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
-  }
-
-  Widget _stepIndicator(String label, int index) {
-    final isActive = _currentStep == index;
-
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => setState(() => _currentStep = index),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 10,
-                  backgroundColor: isActive ? Color(0xFFF06500) : Colors.grey,
-                  child: Text(
-                    "${index + 1}",
-                    style: TextStyle(fontSize: 12, color: Colors.white),
-                  ),
-                ),
-                SizedBox(width: 8),
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: isActive ? Color(0xFFF06500) : Colors.grey,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 4),
-            Container(
-              height: 2,
-              color: isActive ? Color(0xFFF06500) : Colors.grey,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _stepContent() {
-    if (_currentStep == 0) {
-      return Column(
-        children: [
-          TextFormField(
-            controller: _nameController,
-            decoration: _inputDecoration("Full name", Icons.person),
-            style: TextStyle(color: Colors.white),
-            validator:
-                (val) => val == null || val.isEmpty ? "Name required" : null,
-          ),
-          SizedBox(height: 16),
-          TextFormField(
-            controller: _emailController,
-            decoration: _inputDecoration("Email address", Icons.email),
-            style: TextStyle(color: Colors.white),
-            validator:
-                (val) =>
-                    val == null || !val.contains('@')
-                        ? "Valid email required"
-                        : null,
-          ),
-          SizedBox(height: 16),
-          TextFormField(
-            controller: _passwordController,
-            obscureText: !_showPassword,
-            decoration: _passwordInput("Password", _showPassword, () {
-              setState(() => _showPassword = !_showPassword);
-            }),
-            style: TextStyle(color: Colors.white),
-            validator:
-                (val) =>
-                    val != null && val.length >= 6
-                        ? null
-                        : "Minimum 6 characters",
-          ),
-          SizedBox(height: 16),
-          TextFormField(
-            controller: _confirmPasswordController,
-            obscureText: !_showConfirmPassword,
-            decoration: _passwordInput(
-              "Confirm Password",
-              _showConfirmPassword,
-              () {
-                setState(() => _showConfirmPassword = !_showConfirmPassword);
-              },
-            ),
-            style: TextStyle(color: Colors.white),
-            validator:
-                (val) =>
-                    val == _passwordController.text
-                        ? null
-                        : "Passwords don't match",
-          ),
-        ],
-      );
-    } else {
-      return Column(
-        children: [
-          GestureDetector(
-            onTap: _pickDate,
-            child: AbsorbPointer(
-              child: TextFormField(
-                decoration: _inputDecoration(
-                  _selectedDate != null
-                      ? "${_selectedDate!.toLocal()}".split(' ')[0]
-                      : "Date of Birth",
-                  Icons.calendar_today,
-                ),
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ),
-          SizedBox(height: 16),
-          TextFormField(
-            controller: _heightController,
-            decoration: _inputDecoration("Height (cm)", Icons.height),
-            style: TextStyle(color: Colors.white),
-            validator:
-                (val) => val == null || val.isEmpty ? "Height required" : null,
-          ),
-          SizedBox(height: 16),
-          TextFormField(
-            controller: _weightController,
-            decoration: _inputDecoration("Weight (kg)", Icons.monitor_weight),
-            style: TextStyle(color: Colors.white),
-            validator:
-                (val) => val == null || val.isEmpty ? "Weight required" : null,
-          ),
-        ],
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFF121416),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              Icon(Icons.arrow_back_ios, color: Colors.white),
-              SizedBox(height: 12),
-              Center(
-                child: Image.network(
-                  'https://i.ibb.co/k2K0hS4J/test4.png',
-                  width: 60,
-                ),
-              ),
-              SizedBox(height: 16),
-              Center(
-                child: Text(
-                  "Create an Account",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              SizedBox(height: 8),
-              Center(
-                child: Text(
-                  "Help us finish setting up your account.",
-                  style: TextStyle(color: Color(0xFFC0C0C0)),
-                ),
-              ),
-              SizedBox(height: 24),
-              Row(
-                children: [
-                  _stepIndicator("Account Information", 0),
-                  _stepIndicator("Biodata", 1),
-                ],
-              ),
-              SizedBox(height: 24),
-              _stepContent(),
-              SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () {
-                  if (_currentStep == 0) {
-                    setState(() => _currentStep = 1);
-                  } else {
-                    _submitSignup();
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFF06500),
-                  minimumSize: Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                ),
-                child: Text(
-                  _currentStep == 0 ? "Next" : "Sign Up",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  void _showMessage(String message) =>
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
 }
