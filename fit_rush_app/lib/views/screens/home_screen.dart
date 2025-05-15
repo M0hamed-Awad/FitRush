@@ -5,6 +5,7 @@ import 'package:fit_rush_app/styles/colors.dart';
 import 'package:fit_rush_app/styles/sizes.dart';
 import 'package:fit_rush_app/views/screens/add_activity_screen.dart';
 import 'package:fit_rush_app/views/screens/profile_screen.dart';
+import 'package:fit_rush_app/widgets/common/custom_drawer.dart';
 import 'package:fit_rush_app/widgets/common/custom_loading_indicator.dart';
 import 'package:fit_rush_app/widgets/common/fail_widget.dart';
 import 'package:fit_rush_app/widgets/home/home_screen_body.dart';
@@ -43,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: _buildBottomNavBar(),
       body: _buildHomeScreenBody(),
+      drawer: CustomDrawer(),
     );
   }
 
