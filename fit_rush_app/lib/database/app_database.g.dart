@@ -27,6 +27,26 @@ class $UsersTableTable extends UsersTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _emailMeta = const VerificationMeta('email');
+  @override
+  late final GeneratedColumn<String> email = GeneratedColumn<String>(
+    'email',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _profileImageUrlMeta = const VerificationMeta(
+    'profileImageUrl',
+  );
+  @override
+  late final GeneratedColumn<String> profileImageUrl = GeneratedColumn<String>(
+    'profile_image_url',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _ageMeta = const VerificationMeta('age');
   @override
   late final GeneratedColumn<int> age = GeneratedColumn<int>(
@@ -85,6 +105,8 @@ class $UsersTableTable extends UsersTable
   List<GeneratedColumn> get $columns => [
     uid,
     name,
+    email,
+    profileImageUrl,
     age,
     gender,
     height,
@@ -120,6 +142,23 @@ class $UsersTableTable extends UsersTable
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
+    if (data.containsKey('email')) {
+      context.handle(
+        _emailMeta,
+        email.isAcceptableOrUnknown(data['email']!, _emailMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_emailMeta);
+    }
+    if (data.containsKey('profile_image_url')) {
+      context.handle(
+        _profileImageUrlMeta,
+        profileImageUrl.isAcceptableOrUnknown(
+          data['profile_image_url']!,
+          _profileImageUrlMeta,
+        ),
+      );
+    }
     if (data.containsKey('age')) {
       context.handle(
         _ageMeta,
@@ -150,6 +189,10 @@ class $UsersTableTable extends UsersTable
   @override
   Set<GeneratedColumn> get $primaryKey => {uid};
   @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {email},
+  ];
+  @override
   UsersTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return UsersTableData(
@@ -163,6 +206,15 @@ class $UsersTableTable extends UsersTable
             DriftSqlType.string,
             data['${effectivePrefix}name'],
           )!,
+      email:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}email'],
+          )!,
+      profileImageUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}profile_image_url'],
+      ),
       age: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}age'],
@@ -208,6 +260,8 @@ class $UsersTableTable extends UsersTable
 class UsersTableData extends DataClass implements Insertable<UsersTableData> {
   final String uid;
   final String name;
+  final String email;
+  final String? profileImageUrl;
   final int? age;
   final String? gender;
   final double? height;
@@ -217,6 +271,8 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
   const UsersTableData({
     required this.uid,
     required this.name,
+    required this.email,
+    this.profileImageUrl,
     this.age,
     this.gender,
     this.height,
@@ -229,6 +285,10 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
     final map = <String, Expression>{};
     map['uid'] = Variable<String>(uid);
     map['name'] = Variable<String>(name);
+    map['email'] = Variable<String>(email);
+    if (!nullToAbsent || profileImageUrl != null) {
+      map['profile_image_url'] = Variable<String>(profileImageUrl);
+    }
     if (!nullToAbsent || age != null) {
       map['age'] = Variable<int>(age);
     }
@@ -258,6 +318,11 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
     return UsersTableCompanion(
       uid: Value(uid),
       name: Value(name),
+      email: Value(email),
+      profileImageUrl:
+          profileImageUrl == null && nullToAbsent
+              ? const Value.absent()
+              : Value(profileImageUrl),
       age: age == null && nullToAbsent ? const Value.absent() : Value(age),
       gender:
           gender == null && nullToAbsent ? const Value.absent() : Value(gender),
@@ -278,6 +343,8 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
     return UsersTableData(
       uid: serializer.fromJson<String>(json['uid']),
       name: serializer.fromJson<String>(json['name']),
+      email: serializer.fromJson<String>(json['email']),
+      profileImageUrl: serializer.fromJson<String?>(json['profileImageUrl']),
       age: serializer.fromJson<int?>(json['age']),
       gender: serializer.fromJson<String?>(json['gender']),
       height: serializer.fromJson<double?>(json['height']),
@@ -296,6 +363,8 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
     return <String, dynamic>{
       'uid': serializer.toJson<String>(uid),
       'name': serializer.toJson<String>(name),
+      'email': serializer.toJson<String>(email),
+      'profileImageUrl': serializer.toJson<String?>(profileImageUrl),
       'age': serializer.toJson<int?>(age),
       'gender': serializer.toJson<String?>(gender),
       'height': serializer.toJson<double?>(height),
@@ -312,6 +381,8 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
   UsersTableData copyWith({
     String? uid,
     String? name,
+    String? email,
+    Value<String?> profileImageUrl = const Value.absent(),
     Value<int?> age = const Value.absent(),
     Value<String?> gender = const Value.absent(),
     Value<double?> height = const Value.absent(),
@@ -321,6 +392,9 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
   }) => UsersTableData(
     uid: uid ?? this.uid,
     name: name ?? this.name,
+    email: email ?? this.email,
+    profileImageUrl:
+        profileImageUrl.present ? profileImageUrl.value : this.profileImageUrl,
     age: age.present ? age.value : this.age,
     gender: gender.present ? gender.value : this.gender,
     height: height.present ? height.value : this.height,
@@ -332,6 +406,11 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
     return UsersTableData(
       uid: data.uid.present ? data.uid.value : this.uid,
       name: data.name.present ? data.name.value : this.name,
+      email: data.email.present ? data.email.value : this.email,
+      profileImageUrl:
+          data.profileImageUrl.present
+              ? data.profileImageUrl.value
+              : this.profileImageUrl,
       age: data.age.present ? data.age.value : this.age,
       gender: data.gender.present ? data.gender.value : this.gender,
       height: data.height.present ? data.height.value : this.height,
@@ -349,6 +428,8 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
     return (StringBuffer('UsersTableData(')
           ..write('uid: $uid, ')
           ..write('name: $name, ')
+          ..write('email: $email, ')
+          ..write('profileImageUrl: $profileImageUrl, ')
           ..write('age: $age, ')
           ..write('gender: $gender, ')
           ..write('height: $height, ')
@@ -363,6 +444,8 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
   int get hashCode => Object.hash(
     uid,
     name,
+    email,
+    profileImageUrl,
     age,
     gender,
     height,
@@ -376,6 +459,8 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
       (other is UsersTableData &&
           other.uid == this.uid &&
           other.name == this.name &&
+          other.email == this.email &&
+          other.profileImageUrl == this.profileImageUrl &&
           other.age == this.age &&
           other.gender == this.gender &&
           other.height == this.height &&
@@ -387,6 +472,8 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
 class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
   final Value<String> uid;
   final Value<String> name;
+  final Value<String> email;
+  final Value<String?> profileImageUrl;
   final Value<int?> age;
   final Value<String?> gender;
   final Value<double?> height;
@@ -397,6 +484,8 @@ class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
   const UsersTableCompanion({
     this.uid = const Value.absent(),
     this.name = const Value.absent(),
+    this.email = const Value.absent(),
+    this.profileImageUrl = const Value.absent(),
     this.age = const Value.absent(),
     this.gender = const Value.absent(),
     this.height = const Value.absent(),
@@ -408,6 +497,8 @@ class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
   UsersTableCompanion.insert({
     required String uid,
     required String name,
+    required String email,
+    this.profileImageUrl = const Value.absent(),
     this.age = const Value.absent(),
     this.gender = const Value.absent(),
     this.height = const Value.absent(),
@@ -417,11 +508,14 @@ class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
     this.rowid = const Value.absent(),
   }) : uid = Value(uid),
        name = Value(name),
+       email = Value(email),
        longTermGoal = Value(longTermGoal),
        dailyGoal = Value(dailyGoal);
   static Insertable<UsersTableData> custom({
     Expression<String>? uid,
     Expression<String>? name,
+    Expression<String>? email,
+    Expression<String>? profileImageUrl,
     Expression<int>? age,
     Expression<String>? gender,
     Expression<double>? height,
@@ -433,6 +527,8 @@ class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
     return RawValuesInsertable({
       if (uid != null) 'uid': uid,
       if (name != null) 'name': name,
+      if (email != null) 'email': email,
+      if (profileImageUrl != null) 'profile_image_url': profileImageUrl,
       if (age != null) 'age': age,
       if (gender != null) 'gender': gender,
       if (height != null) 'height': height,
@@ -446,6 +542,8 @@ class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
   UsersTableCompanion copyWith({
     Value<String>? uid,
     Value<String>? name,
+    Value<String>? email,
+    Value<String?>? profileImageUrl,
     Value<int?>? age,
     Value<String?>? gender,
     Value<double?>? height,
@@ -457,6 +555,8 @@ class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
     return UsersTableCompanion(
       uid: uid ?? this.uid,
       name: name ?? this.name,
+      email: email ?? this.email,
+      profileImageUrl: profileImageUrl ?? this.profileImageUrl,
       age: age ?? this.age,
       gender: gender ?? this.gender,
       height: height ?? this.height,
@@ -475,6 +575,12 @@ class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
+    }
+    if (email.present) {
+      map['email'] = Variable<String>(email.value);
+    }
+    if (profileImageUrl.present) {
+      map['profile_image_url'] = Variable<String>(profileImageUrl.value);
     }
     if (age.present) {
       map['age'] = Variable<int>(age.value);
@@ -509,6 +615,8 @@ class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
     return (StringBuffer('UsersTableCompanion(')
           ..write('uid: $uid, ')
           ..write('name: $name, ')
+          ..write('email: $email, ')
+          ..write('profileImageUrl: $profileImageUrl, ')
           ..write('age: $age, ')
           ..write('gender: $gender, ')
           ..write('height: $height, ')
@@ -1667,6 +1775,8 @@ typedef $$UsersTableTableCreateCompanionBuilder =
     UsersTableCompanion Function({
       required String uid,
       required String name,
+      required String email,
+      Value<String?> profileImageUrl,
       Value<int?> age,
       Value<String?> gender,
       Value<double?> height,
@@ -1679,6 +1789,8 @@ typedef $$UsersTableTableUpdateCompanionBuilder =
     UsersTableCompanion Function({
       Value<String> uid,
       Value<String> name,
+      Value<String> email,
+      Value<String?> profileImageUrl,
       Value<int?> age,
       Value<String?> gender,
       Value<double?> height,
@@ -1704,6 +1816,16 @@ class $$UsersTableTableFilterComposer
 
   ColumnFilters<String> get name => $composableBuilder(
     column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get email => $composableBuilder(
+    column: $table.email,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get profileImageUrl => $composableBuilder(
+    column: $table.profileImageUrl,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1759,6 +1881,16 @@ class $$UsersTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get email => $composableBuilder(
+    column: $table.email,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get profileImageUrl => $composableBuilder(
+    column: $table.profileImageUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get age => $composableBuilder(
     column: $table.age,
     builder: (column) => ColumnOrderings(column),
@@ -1804,6 +1936,14 @@ class $$UsersTableTableAnnotationComposer
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get email =>
+      $composableBuilder(column: $table.email, builder: (column) => column);
+
+  GeneratedColumn<String> get profileImageUrl => $composableBuilder(
+    column: $table.profileImageUrl,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get age =>
       $composableBuilder(column: $table.age, builder: (column) => column);
@@ -1860,6 +2000,8 @@ class $$UsersTableTableTableManager
               ({
                 Value<String> uid = const Value.absent(),
                 Value<String> name = const Value.absent(),
+                Value<String> email = const Value.absent(),
+                Value<String?> profileImageUrl = const Value.absent(),
                 Value<int?> age = const Value.absent(),
                 Value<String?> gender = const Value.absent(),
                 Value<double?> height = const Value.absent(),
@@ -1870,6 +2012,8 @@ class $$UsersTableTableTableManager
               }) => UsersTableCompanion(
                 uid: uid,
                 name: name,
+                email: email,
+                profileImageUrl: profileImageUrl,
                 age: age,
                 gender: gender,
                 height: height,
@@ -1882,6 +2026,8 @@ class $$UsersTableTableTableManager
               ({
                 required String uid,
                 required String name,
+                required String email,
+                Value<String?> profileImageUrl = const Value.absent(),
                 Value<int?> age = const Value.absent(),
                 Value<String?> gender = const Value.absent(),
                 Value<double?> height = const Value.absent(),
@@ -1892,6 +2038,8 @@ class $$UsersTableTableTableManager
               }) => UsersTableCompanion.insert(
                 uid: uid,
                 name: name,
+                email: email,
+                profileImageUrl: profileImageUrl,
                 age: age,
                 gender: gender,
                 height: height,

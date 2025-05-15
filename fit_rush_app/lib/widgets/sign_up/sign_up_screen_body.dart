@@ -6,7 +6,6 @@ import 'package:fit_rush_app/widgets/sign_up/bio_data_step.dart';
 import 'package:fit_rush_app/widgets/sign_up/custom_sign_up_text_field.dart';
 import 'package:fit_rush_app/widgets/sign_up/step_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SignUpScreenBody extends StatefulWidget {
   @override
@@ -219,7 +218,7 @@ class _SignUpScreenBodyState extends State<SignUpScreenBody> {
       final weight = double.tryParse(_weightController.text.trim());
       final dob = _selectedDate;
 
-      // User Goals Deafult
+      // User Goals Default
 
       final userGoal = UserGoalModel(
         walkedSteps: 0,
