@@ -6,7 +6,6 @@ import 'package:fit_rush_app/cubits/user_cubit/user_cubit.dart';
 import 'package:fit_rush_app/firebase_options.dart';
 import 'package:fit_rush_app/styles/themes.dart';
 import 'package:fit_rush_app/views/screens/landing_screen.dart';
-import 'package:fit_rush_app/widgets/landing/landing_screen_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
