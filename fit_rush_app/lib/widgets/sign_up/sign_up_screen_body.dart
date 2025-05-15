@@ -8,6 +8,7 @@ import 'package:fit_rush_app/models/user_goal_model.dart';
 import 'package:fit_rush_app/styles/colors.dart';
 import 'package:fit_rush_app/styles/sizes.dart';
 import 'package:fit_rush_app/views/screens/home_screen.dart';
+import 'package:fit_rush_app/views/screens/login_screen.dart';
 import 'package:fit_rush_app/widgets/sign_up/bio_data_step.dart';
 import 'package:fit_rush_app/widgets/sign_up/custom_sign_up_text_field.dart';
 import 'package:fit_rush_app/widgets/sign_up/step_indicator.dart';
@@ -86,6 +87,35 @@ class _SignUpScreenBodyState extends State<SignUpScreenBody> {
                 _buildGoalStep(),
               AppSizes.kSizeH24,
               _buildSubmitButton(),
+              AppSizes.kSizeH16,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Already have an account?",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      NavigationHelper.pushReplacement(
+                        destination: LoginScreen(),
+                        context: context,
+                      );
+                    },
+                    child: Text(
+                      "Login",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        decoration: TextDecoration.underline,
+                        decorationColor:
+                            Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
