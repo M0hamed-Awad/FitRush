@@ -1,6 +1,9 @@
+import 'package:fit_rush_app/cubits/user_cubit/user_cubit.dart';
+import 'package:fit_rush_app/cubits/user_cubit/user_cubit_states.dart';
 import 'package:fit_rush_app/styles/colors.dart';
 import 'package:fit_rush_app/styles/sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class WelcomeCard extends StatelessWidget {
   const WelcomeCard({super.key});
@@ -25,24 +28,30 @@ class WelcomeCard extends StatelessWidget {
                     ),
                   ),
                   AppSizes.kSizeH4,
-                  RichText(
-                    text: TextSpan(
-                      text: "Welcome back,\n",
-                      style: TextStyle(
-                        color: AppColors.kGreyColor,
-                        fontSize: 18,
-                      ),
-                      children: [
-                        TextSpan(
-                          text: "Abdallah!",
+                  BlocBuilder<UserCubit, UserState>(
+                    builder: (context, state) {
+                      final username =
+                          (state.user == null) ? "_" : state.user?.name;
+                      return RichText(
+                        text: TextSpan(
+                          text: "Welcome back,\n",
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurface,
+                            color: AppColors.kGreyColor,
                             fontSize: 18,
-                            fontWeight: FontWeight.bold,
                           ),
+                          children: [
+                            TextSpan(
+                              text: username,
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      );
+                    },
                   ),
                 ],
               ),

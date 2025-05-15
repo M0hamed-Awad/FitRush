@@ -2,7 +2,8 @@ import 'package:fit_rush_app/styles/sizes.dart';
 import 'package:flutter/material.dart';
 
 class DailyMotivationCard extends StatelessWidget {
-  const DailyMotivationCard({super.key});
+  final int remainingStepsTowardsGoal;
+  const DailyMotivationCard({super.key, required this.remainingStepsTowardsGoal});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class DailyMotivationCard extends StatelessWidget {
             children: [
               TextSpan(text: "You are only "),
               TextSpan(
-                text: "500 Steps ",
+                text: "$remainingStepsTowardsGoal Steps ",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).colorScheme.primary,
