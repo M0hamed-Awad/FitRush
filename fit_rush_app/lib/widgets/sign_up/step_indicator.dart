@@ -1,3 +1,5 @@
+import 'package:fit_rush_app/styles/colors.dart';
+import 'package:fit_rush_app/styles/sizes.dart';
 import 'package:flutter/material.dart';
 
 class StepIndicator extends StatelessWidget {
@@ -24,30 +26,43 @@ class StepIndicator extends StatelessWidget {
         child: Column(
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 4,
               children: [
                 CircleAvatar(
                   radius: 10,
                   backgroundColor:
-                      isActive ? const Color(0xFFF06500) : Colors.grey,
+                      isActive
+                          ? Theme.of(context).colorScheme.primary
+                          : AppColors.kGreyColor,
                   child: Text(
                     "${index + 1}",
-                    style: const TextStyle(fontSize: 12, color: Colors.white),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.kSecondaryColorLight,
+                    ),
                   ),
                 ),
-                const SizedBox(width: 8),
+                AppSizes.kSizeH8,
                 Text(
                   label,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: isActive ? const Color(0xFFF06500) : Colors.grey,
+                    color:
+                        isActive
+                            ? Theme.of(context).colorScheme.primary
+                            : AppColors.kGreyColor,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 4),
+            AppSizes.kSizeH4,
             Container(
               height: 2,
-              color: isActive ? const Color(0xFFF06500) : Colors.grey,
+              color:
+                  isActive
+                      ? Theme.of(context).colorScheme.primary
+                      : AppColors.kGreyColor,
             ),
           ],
         ),

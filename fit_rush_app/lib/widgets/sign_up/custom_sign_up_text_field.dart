@@ -1,3 +1,5 @@
+import 'package:fit_rush_app/styles/colors.dart';
+import 'package:fit_rush_app/styles/sizes.dart';
 import 'package:flutter/material.dart';
 
 class CustomSignUpTextField extends StatelessWidget {
@@ -9,6 +11,7 @@ class CustomSignUpTextField extends StatelessWidget {
   final FormFieldValidator<String>? validator;
   final VoidCallback? onTap;
   final bool readOnly;
+  final TextInputType? keyboardType;
 
   const CustomSignUpTextField({
     super.key,
@@ -20,27 +23,27 @@ class CustomSignUpTextField extends StatelessWidget {
     this.validator,
     this.onTap,
     this.readOnly = false,
+    this.keyboardType,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      keyboardType: keyboardType,
       controller: controller,
       validator: validator,
       obscureText: isPassword,
       onTap: onTap,
       readOnly: readOnly,
-      style: const TextStyle(color: Colors.white),
+      style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
       decoration: InputDecoration(
-        prefixIcon: Icon(icon, color: Colors.white),
+        prefixIcon: Icon(icon, color: Theme.of(context).colorScheme.onSurface),
         suffixIcon: suffixIcon,
         hintText: hint,
-        hintStyle: const TextStyle(color: Colors.white70),
-        filled: true,
+        hintStyle: const TextStyle(color: AppColors.kGreyColor),
+        filled: false,
         fillColor: Colors.black.withOpacity(0.2),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        border: OutlineInputBorder(borderRadius: AppSizes.kBorderRadius8),
       ),
     );
   }

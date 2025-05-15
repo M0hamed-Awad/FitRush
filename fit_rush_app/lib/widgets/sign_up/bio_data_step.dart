@@ -18,6 +18,7 @@ class BioDataStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      spacing: 16,
       children: [
         GestureDetector(
           onTap: onPickDate,
@@ -32,7 +33,6 @@ class BioDataStep extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 16),
         CustomSignUpTextField(
           controller: heightController,
           hint: "Height (cm)",
@@ -40,7 +40,6 @@ class BioDataStep extends StatelessWidget {
           validator:
               (val) => val == null || val.isEmpty ? "Height required" : null,
         ),
-        const SizedBox(height: 16),
         CustomSignUpTextField(
           controller: weightController,
           hint: "Weight (kg)",
