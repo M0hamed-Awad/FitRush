@@ -13,7 +13,7 @@ class CustomDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        color: AppColors.kNeutralLightColor,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: Column(
           children: [
             SizedBox(height: 60),
@@ -35,10 +35,10 @@ class CustomDrawer extends StatelessWidget {
             Expanded(child: Container()),
             // Logout button
             ListTile(
-              leading: Icon(Icons.logout, color: AppColors.kNeutralDarkColor),
+              leading: Icon(Icons.logout, color: Theme.of(context).colorScheme.onSurface),
               title: Text(
                 'Logout',
-                style: TextStyle(color: AppColors.kNeutralDarkColor),
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
               ),
               onTap: () async {
                 logout(context);

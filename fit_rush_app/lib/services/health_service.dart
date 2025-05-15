@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:health/health.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class HealthService {
   static final Health _healthInstance = Health();
@@ -30,6 +31,10 @@ class HealthService {
       HealthDataAccess.READ,
       HealthDataAccess.READ,
     ];
+
+    await Permission.activityRecognition.request();
+    await Permission.sensors.request();
+    await Permission.location.request();
 
     // Checks if the Required Permissions is Granted or NOT (for the given health data types).
     final hasPermission = await _healthInstance.hasPermissions(types) ?? false;
@@ -87,6 +92,12 @@ class HealthService {
       endTime: now,
       types: [HealthDataType.ACTIVE_ENERGY_BURNED],
     );
+
+    for (final point in data) {
+      debugPrint(
+        '[DEBUG] Calories Point: ${point.value}, source: ${point.sourceName}',
+      );
+    }
 
     double totalCalories = data.fold(
       0.0,

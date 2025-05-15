@@ -1,5 +1,10 @@
 import 'dart:async';
 
+import 'package:drift/drift.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fit_rush_app/database/app_database.dart';
+import 'package:fit_rush_app/database/dao/activity_history_dao.dart';
+import 'package:fit_rush_app/database/dao/exercise_dao.dart';
 import 'package:fit_rush_app/models/exercise_type_enum.dart';
 import 'package:fit_rush_app/styles/colors.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +57,7 @@ class _AddActivityScreenBodyState extends State<AddActivityScreenBody> {
     });
   }
 
-  void _onAdd() {
+  void _onAdd() async {
     if (_formKey.currentState!.validate()) {
       if (_selectedExerciseType == null) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -67,9 +72,61 @@ class _AddActivityScreenBodyState extends State<AddActivityScreenBody> {
         return;
       }
 
+      final firebaseUser = FirebaseAuth.instance.currentUser;
+      final String uid = firebaseUser?.uid ?? "_";
+
+      final duration = int.parse(_durationController.text);
+      final calories = double.parse(_caloriesController.text);
+      final notes =
+          _notesController.text.isNotEmpty ? _notesController.text : null;
+
+      final exercise = ExercisesTableCompanion(
+        userUid: Value(uid),
+        type: Value(_selectedExerciseType!),
+        duration: Value(duration),
+        calories: Value(calories),
+        notes: Value(notes),
+        createdAt: Value(_selectedDateTime!),
+      );
+
+      final exerciseDao = ExerciseDao(AppDatabase.instance);
+      final insertedExerciseId = await exerciseDao.insertExercise(exercise);
+
+      // Update history
+      final historyDao = ActivityHistoryDao(AppDatabase.instance);
+
+      final activity = ActivityHistoryTableCompanion(
+        userUid: Value(uid),
+        exerciseId: Value(insertedExerciseId),
+        source: const Value('manual'),
+        date: Value(_selectedDateTime!),
+        duration: Value(duration),
+        steps: const Value(null), // no steps for manual input
+        distance: const Value(null),
+        calories: Value(calories),
+        notes: Value(notes),
+      );
+
+      // Insert new History record
+      await historyDao.insertActivity(activity);
+
+      debugPrint("[DEBUG] History updated");
+      final allHistoryEntries = await historyDao.getAllActivities();
+      for (var entry in allHistoryEntries) {
+        debugPrint("[DEBUG] Date: ${entry.date}, Uid: ${entry.userUid}");
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Activity added successfully!')),
       );
+
+      debugPrint("[DEBUG] Activity added");
+      final allExercises = await exerciseDao.getAllExercises();
+      for (var exercise in allExercises) {
+        debugPrint(
+          "[DEBUG] Type: ${exercise.type}, Calories: ${exercise.calories}",
+        );
+      }
 
       setState(() {
         _selectedExerciseType = null;
