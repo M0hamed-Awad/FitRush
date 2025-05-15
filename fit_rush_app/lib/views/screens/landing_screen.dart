@@ -26,7 +26,7 @@ class LandingScreen extends StatelessWidget {
 
       final uid = firebaseUser.uid;
 
-      final db = AppDatabase.instance; // Or however you access your DB
+      final db = AppDatabase.instance;
 
       final userQuery = db.select(db.usersTable)
         ..where((tbl) => tbl.uid.equals(uid));
