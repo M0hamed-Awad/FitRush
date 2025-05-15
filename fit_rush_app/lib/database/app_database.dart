@@ -24,7 +24,9 @@ part 'app_database.g.dart';
   daos: [UserDao, ExerciseDao, ActivityHistoryDao],
 )
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(_openConnection());
+  AppDatabase._internal() : super(_openConnection());
+  static final AppDatabase _instance = AppDatabase._internal();
+  static AppDatabase get instance => _instance;
 
   @override
   int get schemaVersion => 1;
