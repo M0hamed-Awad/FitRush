@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_rush_app/constants.dart';
 import 'package:fit_rush_app/cubits/user_cubit/user_cubit.dart';
 import 'package:fit_rush_app/database/app_database.dart';
+import 'package:fit_rush_app/database/dao/user_dao.dart';
 import 'package:fit_rush_app/helper/navigation_helper.dart';
 import 'package:fit_rush_app/models/user_goal_model.dart';
 import 'package:fit_rush_app/styles/colors.dart';
@@ -367,13 +368,15 @@ class _SignUpScreenBodyState extends State<SignUpScreenBody> {
       );
 
       // Insert into local Drift DB
-      final insertedUserId = await db.into(db.usersTable).insert(userCompanion);
+      final userDao = UserDao(db);
+      final insertedUserId = await userDao.insertUser(userCompanion);
 
       // Check if the insertion was successful
       if (insertedUserId > 0) {
         // Data was saved successfully
         debugPrint("[DEBUG] User saved successfully!");
-        final allUsers = await db.select(db.usersTable).get();
+
+        final allUsers = await userDao.getAllUsers();
         for (var user in allUsers) {
           print("User: ${user.name}, Email: ${user.age}");
         }
@@ -385,9 +388,7 @@ class _SignUpScreenBodyState extends State<SignUpScreenBody> {
       _showMessage("Signup successful!");
 
       // Get Logged In User
-      final userQuery = db.select(db.usersTable)
-        ..where((tbl) => tbl.uid.equals(uid));
-      final loggedInUser = await userQuery.getSingleOrNull();
+      final loggedInUser = await userDao.getUserByUid(uid);
 
       if (loggedInUser != null) {
         context.read<UserCubit>().setUser(loggedInUser);

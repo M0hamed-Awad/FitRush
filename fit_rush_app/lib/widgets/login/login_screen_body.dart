@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_rush_app/constants.dart';
 import 'package:fit_rush_app/cubits/user_cubit/user_cubit.dart';
 import 'package:fit_rush_app/database/app_database.dart';
+import 'package:fit_rush_app/database/dao/user_dao.dart';
 import 'package:fit_rush_app/helper/navigation_helper.dart';
 import 'package:fit_rush_app/styles/colors.dart';
 import 'package:fit_rush_app/views/screens/home_screen.dart';
@@ -34,24 +35,25 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
       final uid = credential.user?.uid;
 
       final db = AppDatabase.instance;
-      final userQuery = db.select(db.usersTable)
-        ..where((tbl) => tbl.uid.equals(uid!));
-      final loggedInUser = await userQuery.getSingleOrNull();
+
+      final userDao = UserDao(db);
+      final loggedInUser = await userDao.getUserByUid(uid!);
 
       if (loggedInUser != null) {
         context.read<UserCubit>().setUser(loggedInUser);
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setBool(kIsLoggedInFlag, true);
-
-        NavigationHelper.pushReplacement(
-          destination: const HomeScreen(),
-          context: context,
-        );
-
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text("Login successful!")));
       }
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(kIsLoggedInFlag, true);
+
+      NavigationHelper.pushReplacement(
+        destination: const HomeScreen(),
+        context: context,
+      );
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Login successful!")));
     } catch (e) {
       ScaffoldMessenger.of(
         context,
