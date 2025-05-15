@@ -12,7 +12,7 @@ class AppColors {
   static const Color kSuccessColor = kAccentLimeColor; // Use for celebrations
   static const Color kButtonColor =
       kAccentOrangeColor; // Use for primary buttons
-  static const Color kGreyColor = Color(0xFFAAAAAA);
+  static const Color kGreyColor = Color(0xFF979797);
   static const Color kLightGreyColor = Color(0xFFDDDDDD);
 
   // Light theme

@@ -1,3 +1,6 @@
+import 'package:fit_rush_app/helper/navigation_helper.dart';
+import 'package:fit_rush_app/styles/sizes.dart';
+import 'package:fit_rush_app/views/screens/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 
 class LandingScreenBody extends StatelessWidget {
@@ -5,38 +8,25 @@ class LandingScreenBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFF353A40), Color(0xFF121416)],
-          stops: [0.23, 0.70],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-      ),
-      child: Column(
+    return Scaffold(
+      body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // ✅ Logo (new)
           Container(
-            margin: EdgeInsets.only(bottom: 20),
+            margin: AppSizes.kMarginBottom20,
             width: 100,
             height: 100,
-            child: Image.network(
-              'https://i.ibb.co/k2K0hS4J/test4.png',
-              fit: BoxFit.contain,
-            ),
+            child: Image(image: AssetImage("assets/images/Logo-V2-red.png")),
           ),
 
           // ✅ Subtitle
           Text(
             "Stronger, Healthier, Together",
             style: TextStyle(
-              color: Color(0xFFC0C0C0),
+              color: Theme.of(context).colorScheme.onSurface,
               fontSize: 14,
-              decoration: TextDecoration.underline,
+              fontWeight: FontWeight.bold,
             ),
           ),
 
@@ -52,19 +42,25 @@ class LandingScreenBody extends StatelessWidget {
                 onPressed: () {
                   //TODO
                   // Navigate to Login
+                  NavigationHelper.push(
+                    destination: SignUpScreen(),
+                    context: context,
+                  );
                 },
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Color(0xFFF06500)),
-                  shape: MaterialStateProperty.all(
+                  backgroundColor: WidgetStateProperty.all(
+                    Theme.of(context).colorScheme.primary,
+                  ),
+                  shape: WidgetStateProperty.all(
                     RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: AppSizes.kBorderRadius6,
                     ),
                   ),
                 ),
                 child: Text(
                   "Get started",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onPrimary,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
