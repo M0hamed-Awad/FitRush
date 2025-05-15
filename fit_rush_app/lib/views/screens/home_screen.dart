@@ -3,6 +3,7 @@ import 'package:fit_rush_app/cubits/health_permissions_cubit/health_permissions_
 import 'package:fit_rush_app/helper/navigation_helper.dart';
 import 'package:fit_rush_app/styles/colors.dart';
 import 'package:fit_rush_app/styles/sizes.dart';
+import 'package:fit_rush_app/views/screens/add_activity_screen.dart';
 import 'package:fit_rush_app/views/screens/profile_screen.dart';
 import 'package:fit_rush_app/widgets/common/custom_loading_indicator.dart';
 import 'package:fit_rush_app/widgets/common/fail_widget.dart';
@@ -81,7 +82,10 @@ class _HomeScreenState extends State<HomeScreen> {
   FloatingActionButton _buildFab() {
     return FloatingActionButton(
       onPressed: () {
-        // Handle FAB press
+        NavigationHelper.push(
+          destination: AddActivityScreen(),
+          context: context,
+        );
       },
       shape: RoundedRectangleBorder(borderRadius: AppSizes.kBorderRadius40),
       backgroundColor: AppColors.kPrimaryColor,
