@@ -21,16 +21,29 @@ class ActivityHistoryDao extends DatabaseAccessor<AppDatabase>
   Stream<List<ActivityHistoryTableData>> watchAllActivities() =>
       select(activityHistoryTable).watch();
 
-  // Get activities by user ID
-  Future<List<ActivityHistoryTableData>> getActivitiesByUserId(int userId) {
+  // Watch all activity records as a stream for a certain User (for UI updates)
+  Stream<List<ActivityHistoryTableData>> watchActivitiesByUserId(
+    String userUid,
+  ) {
     return (select(activityHistoryTable)
-      ..where((tbl) => tbl.userId.equals(userId))).get();
+          ..where((tbl) => tbl.userUid.equals(userUid))
+          ..orderBy([
+            (tbl) =>
+                OrderingTerm(expression: tbl.date, mode: OrderingMode.desc),
+          ]))
+        .watch();
+  }
+
+  // Get activities by user ID
+  Future<List<ActivityHistoryTableData>> getActivitiesByUserId(String userUid) {
+    return (select(activityHistoryTable)
+      ..where((tbl) => tbl.userUid.equals(userUid))).get();
   }
 
   // Delete all activities of a user
-  Future<int> deleteActivitiesByUserId(int userId) {
+  Future<int> deleteActivitiesByUserId(String userUid) {
     return (delete(activityHistoryTable)
-      ..where((tbl) => tbl.userId.equals(userId))).go();
+      ..where((tbl) => tbl.userUid.equals(userUid))).go();
   }
 }
 

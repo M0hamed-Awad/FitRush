@@ -22,8 +22,8 @@ class FitRushApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => TodayHealthCubit()..fetchTodayData()),
-        BlocProvider(
+        BlocProvider(create: (context) =>  TodayHealthCubit()..fetchTodayData()),
+        BlocProvider( 
           create: (context) => LastSevenDaysHealthCubit()..fetchWeekData(),
         ),
         BlocProvider(
