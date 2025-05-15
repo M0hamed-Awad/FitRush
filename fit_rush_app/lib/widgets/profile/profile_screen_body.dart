@@ -1,5 +1,8 @@
+import 'package:fit_rush_app/api/bmi_api_service.dart';
 import 'package:fit_rush_app/cubits/user_cubit/user_cubit.dart';
 import 'package:fit_rush_app/cubits/user_cubit/user_cubit_states.dart';
+import 'package:fit_rush_app/database/app_database.dart';
+import 'package:fit_rush_app/models/bmi_model.dart';
 import 'package:fit_rush_app/styles/colors.dart';
 import 'package:fit_rush_app/styles/sizes.dart';
 import 'package:fit_rush_app/widgets/profile/daily_goals_widget.dart';
@@ -8,8 +11,36 @@ import 'package:fit_rush_app/widgets/profile/user_data_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ProfileScreenBody extends StatelessWidget {
-  const ProfileScreenBody({super.key});
+class ProfileScreenBody extends StatefulWidget {
+  final UsersTableData? user;
+
+  const ProfileScreenBody({super.key, required this.user});
+
+  @override
+  State<ProfileScreenBody> createState() => _ProfileScreenBodyState();
+}
+
+class _ProfileScreenBodyState extends State<ProfileScreenBody> {
+  BmiModel? bmi;
+
+  @override
+  void initState() {
+    super.initState();
+    callBmi();
+  }
+
+  Future<void> callBmi() async {
+    final bmiService = BmiService();
+    final result = await bmiService.getBmi(
+      height: (widget.user?.height ?? 0).toInt(),
+      weight: (widget.user?.weight ?? 0).toInt(),
+    );
+    debugPrint("[DEBUG] BMI: ${result.bmi}, Status: ${result.weightStatus}");
+
+    setState(() {
+      bmi = result;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,16 +79,18 @@ class ProfileScreenBody extends StatelessWidget {
                 ),
                 SizedBox(height: 32),
 
-                Divider(thickness: 2, height: 6),
-                Text(
-                  "Long Term Goals",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: AppColors.kTextColorDark,
-                  ),
-                ),
+                // For Long Term Goals
 
-                LongTermGoalsWidget(),
+                // Divider(thickness: 2, height: 6),
+                // Text(
+                //   "Long Term Goals",
+                //   style: TextStyle(
+                //     fontSize: 18,
+                //     color: AppColors.kTextColorDark,
+                //   ),
+                // ),
+
+                // LongTermGoalsWidget(),
 
                 Divider(thickness: 2, height: 6),
                 Text(
@@ -68,8 +101,8 @@ class ProfileScreenBody extends StatelessWidget {
                   ),
                 ),
                 DailyGoalsWidget(
-                  stepsGoal: state.user?.dailyGoal.goalStepsCount ?? 0,
-                  caloriesGoal: state.user?.dailyGoal.goalCaloriesBurned ?? 0,
+                  stepsGoal: widget.user?.dailyGoal.goalStepsCount ?? 0,
+                  caloriesGoal: widget.user?.dailyGoal.goalCaloriesBurned ?? 0,
                 ),
 
                 Divider(thickness: 2, height: 6),
@@ -81,8 +114,9 @@ class ProfileScreenBody extends StatelessWidget {
                   ),
                 ),
                 UserDataWidget(
-                  height: state.user?.height ?? 0,
-                  weight: state.user?.weight ?? 0,
+                  height: widget.user?.height ?? 0,
+                  weight: widget.user?.weight ?? 0,
+                  bmi: bmi,
                 ),
               ],
             ),

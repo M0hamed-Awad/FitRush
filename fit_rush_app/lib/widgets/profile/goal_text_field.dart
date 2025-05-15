@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class GoalTextField extends StatefulWidget {
   final String label;
-  final num data;
+  final dynamic data;
   const GoalTextField({super.key, required this.label, required this.data});
 
   @override
