@@ -17,6 +17,7 @@ import 'package:fit_rush_app/database/dao/exercise_dao.dart';
 import 'package:fit_rush_app/database/dao/user_dao.dart';
 
 part 'app_database.g.dart';
+// flutter pub run build_runner build
 
 @DriftDatabase(
   tables: [UsersTable, ExercisesTable, ActivityHistoryTable],

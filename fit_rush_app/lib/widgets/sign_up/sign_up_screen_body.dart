@@ -219,7 +219,6 @@ class _SignUpScreenBodyState extends State<SignUpScreenBody> {
       final dob = _selectedDate;
 
       // User Goals Default
-
       final userGoal = UserGoalModel(
         walkedSteps: 0,
         weight: 0,
