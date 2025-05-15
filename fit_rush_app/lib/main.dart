@@ -2,10 +2,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:fit_rush_app/cubits/health_permissions_cubit/health_permissions_cubit.dart';
 import 'package:fit_rush_app/cubits/last_seven_days_health_cubit/last_seven_days_health_cubit.dart';
 import 'package:fit_rush_app/cubits/today_health_cubit/today_health_cubit.dart';
+import 'package:fit_rush_app/cubits/user_cubit/user_cubit.dart';
 import 'package:fit_rush_app/firebase_options.dart';
 import 'package:fit_rush_app/styles/themes.dart';
 import 'package:fit_rush_app/views/screens/landing_screen.dart';
-import 'package:fit_rush_app/views/screens/sign_up_screen.dart';
+import 'package:fit_rush_app/widgets/landing/landing_screen_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,6 +31,8 @@ class FitRushApp extends StatelessWidget {
           create:
               (context) => HealthPermissionsCubit()..requestPermissionsOnce(),
         ),
+
+        BlocProvider(create: (context) => UserCubit()),
       ],
       child: MaterialApp(
         title: 'FitRush',
