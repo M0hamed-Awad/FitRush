@@ -40,6 +40,11 @@ class ActivityProgressScreenBody extends StatelessWidget {
     required List<int> lastSevenDaysSteps,
     required BuildContext context,
   }) {
+    final int totalSteps = lastSevenDaysSteps.fold(
+      0,
+      (sum, value) => sum + value,
+    );
+
     return Padding(
       padding: AppSizes.kPadding8,
       child: SingleChildScrollView(
@@ -47,74 +52,68 @@ class ActivityProgressScreenBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _buildActivityDateText(context),
-            _buildActivityTotalAmountRow(context),
+            _buildActivityTotalAmountRow(context, totalSteps: totalSteps),
             AppSizes.kSizeH24,
             Padding(
               padding: AppSizes.kPadding8,
               child: WeekChart(lastSevenDaysSteps: lastSevenDaysSteps),
             ),
-            _buildLastSevenDaysActivities(context),
+            _buildLastSevenDaysActivities(
+              context,
+              weeklySteps: lastSevenDaysSteps,
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildLastSevenDaysActivities(BuildContext context) {
+  Widget _buildLastSevenDaysActivities(
+    BuildContext context, {
+    required List<int> weeklySteps,
+  }) {
     return Container(
       margin: AppSizes.kMarginTop16,
       child: Column(
         spacing: AppSizes.kSpacing8,
-        children: _buildLastSevenDaysList(context),
+        children: _buildWeeklyActivityCards(
+          context: context,
+          weeklySteps: weeklySteps,
+        ),
       ),
     );
   }
 
-  List<Widget> _buildLastSevenDaysList(BuildContext context) {
-    return [
-      _buildDayActivityCard(
-        dateString: "Monday, 5 May",
-        totalAmount: 0,
+  List<Widget> _buildWeeklyActivityCards({
+    required BuildContext context,
+    required List<int> weeklySteps,
+  }) {
+    final now = DateTime.now();
+
+    return List.generate(7, (index) {
+      final date = now.subtract(Duration(days: index)); // newest first
+      final dateString =
+          "${_getWeekday(date.weekday)}, ${date.day} ${_getMonthName(date.month)}";
+      return _buildDayActivityCard(
+        dateString: dateString,
+        totalAmount: weeklySteps[6 - index], // access steps in reverse order
         dataType: "Steps",
         context: context,
-      ),
-      _buildDayActivityCard(
-        dateString: "Tuesday, 6 May",
-        totalAmount: 164,
-        dataType: "Steps",
-        context: context,
-      ),
-      _buildDayActivityCard(
-        dateString: "Wednesday, 7 May",
-        totalAmount: 4,
-        dataType: "Steps",
-        context: context,
-      ),
-      _buildDayActivityCard(
-        dateString: "Thursday, 8 May",
-        totalAmount: 4480,
-        dataType: "Steps",
-        context: context,
-      ),
-      _buildDayActivityCard(
-        dateString: "Friday, 9 May",
-        totalAmount: 402,
-        dataType: "Steps",
-        context: context,
-      ),
-      _buildDayActivityCard(
-        dateString: "Saturday, 10 May",
-        totalAmount: 389,
-        dataType: "Steps",
-        context: context,
-      ),
-      _buildDayActivityCard(
-        dateString: "Sunday, 11 May",
-        totalAmount: 139,
-        dataType: "Steps",
-        context: context,
-      ),
+      );
+    });
+  }
+
+  String _getWeekday(int weekday) {
+    const days = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
     ];
+    return days[weekday - 1];
   }
 
   Widget _buildDayActivityCard({
@@ -163,14 +162,17 @@ class ActivityProgressScreenBody extends StatelessWidget {
     );
   }
 
-  Row _buildActivityTotalAmountRow(BuildContext context) {
+  Row _buildActivityTotalAmountRow(
+    BuildContext context, {
+    required int totalSteps,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: AppSizes.kSpacing8,
       children: [
         Icon(Icons.directions_run_rounded, color: AppColors.kBlueColor),
         Text(
-          "5,651 Steps",
+          "$totalSteps Steps",
           style: TextStyle(
             fontWeight: FontWeight.w300,
             fontSize: 12,
@@ -182,6 +184,35 @@ class ActivityProgressScreenBody extends StatelessWidget {
   }
 
   Text _buildActivityDateText(BuildContext context) {
-    return Text("5-11 May", style: Theme.of(context).textTheme.bodyLarge);
+    final now = DateTime.now();
+    final past = now.subtract(
+      const Duration(days: 6),
+    ); // 7 days total including today
+
+    final month = _getMonthName(now.month); // Custom month name function
+    final startDay = past.day;
+    final endDay = now.day;
+
+    final dateRange = "$startDay–$endDay $month";
+
+    return Text(dateRange, style: Theme.of(context).textTheme.bodyLarge);
+  }
+
+  String _getMonthName(int month) {
+    const months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+    return months[month - 1];
   }
 }
