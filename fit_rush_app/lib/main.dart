@@ -5,6 +5,7 @@ import 'package:fit_rush_app/cubits/today_health_cubit/today_health_cubit.dart';
 import 'package:fit_rush_app/firebase_options.dart';
 import 'package:fit_rush_app/styles/themes.dart';
 import 'package:fit_rush_app/views/screens/sign_up_screen.dart';
+import 'package:fit_rush_app/views/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -36,7 +37,7 @@ class FitRushApp extends StatelessWidget {
         theme: AppThemes.lightTheme,
         darkTheme: AppThemes.darkTheme,
         themeMode: ThemeMode.system,
-        home: SignUpScreen(),
+        home: SplashScreen(),
       ),
     );
   }
