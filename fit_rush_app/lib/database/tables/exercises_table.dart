@@ -3,11 +3,10 @@ import 'package:fit_rush_app/database/converters/exercise_type_converter.dart';
 
 class ExercisesTable extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get userId => integer()();
-  TextColumn get name => text()();
+  IntColumn get userUid => integer()();
   TextColumn get type => text().map(const ExerciseTypeConverter())();
   IntColumn get duration => integer().nullable()();
-  IntColumn get repetitions => integer().nullable()();
+  TextColumn get notes => text().nullable()();
   RealColumn get calories => real().nullable()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }
