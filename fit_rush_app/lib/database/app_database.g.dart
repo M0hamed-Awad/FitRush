@@ -9,18 +9,14 @@ class $UsersTableTable extends UsersTable
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $UsersTableTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  static const VerificationMeta _uidMeta = const VerificationMeta('uid');
   @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-    'id',
+  late final GeneratedColumn<String> uid = GeneratedColumn<String>(
+    'uid',
     aliasedName,
     false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
   );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
@@ -30,6 +26,26 @@ class $UsersTableTable extends UsersTable
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
+  );
+  static const VerificationMeta _emailMeta = const VerificationMeta('email');
+  @override
+  late final GeneratedColumn<String> email = GeneratedColumn<String>(
+    'email',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _profileImageUrlMeta = const VerificationMeta(
+    'profileImageUrl',
+  );
+  @override
+  late final GeneratedColumn<String> profileImageUrl = GeneratedColumn<String>(
+    'profile_image_url',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _ageMeta = const VerificationMeta('age');
   @override
@@ -87,8 +103,10 @@ class $UsersTableTable extends UsersTable
       ).withConverter<UserGoalModel>($UsersTableTable.$converterdailyGoal);
   @override
   List<GeneratedColumn> get $columns => [
-    id,
+    uid,
     name,
+    email,
+    profileImageUrl,
     age,
     gender,
     height,
@@ -108,8 +126,13 @@ class $UsersTableTable extends UsersTable
   }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    if (data.containsKey('uid')) {
+      context.handle(
+        _uidMeta,
+        uid.isAcceptableOrUnknown(data['uid']!, _uidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uidMeta);
     }
     if (data.containsKey('name')) {
       context.handle(
@@ -118,6 +141,23 @@ class $UsersTableTable extends UsersTable
       );
     } else if (isInserting) {
       context.missing(_nameMeta);
+    }
+    if (data.containsKey('email')) {
+      context.handle(
+        _emailMeta,
+        email.isAcceptableOrUnknown(data['email']!, _emailMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_emailMeta);
+    }
+    if (data.containsKey('profile_image_url')) {
+      context.handle(
+        _profileImageUrlMeta,
+        profileImageUrl.isAcceptableOrUnknown(
+          data['profile_image_url']!,
+          _profileImageUrlMeta,
+        ),
+      );
     }
     if (data.containsKey('age')) {
       context.handle(
@@ -147,21 +187,34 @@ class $UsersTableTable extends UsersTable
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => {uid};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {email},
+  ];
   @override
   UsersTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return UsersTableData(
-      id:
+      uid:
           attachedDatabase.typeMapping.read(
-            DriftSqlType.int,
-            data['${effectivePrefix}id'],
+            DriftSqlType.string,
+            data['${effectivePrefix}uid'],
           )!,
       name:
           attachedDatabase.typeMapping.read(
             DriftSqlType.string,
             data['${effectivePrefix}name'],
           )!,
+      email:
+          attachedDatabase.typeMapping.read(
+            DriftSqlType.string,
+            data['${effectivePrefix}email'],
+          )!,
+      profileImageUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}profile_image_url'],
+      ),
       age: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}age'],
@@ -205,8 +258,10 @@ class $UsersTableTable extends UsersTable
 }
 
 class UsersTableData extends DataClass implements Insertable<UsersTableData> {
-  final int id;
+  final String uid;
   final String name;
+  final String email;
+  final String? profileImageUrl;
   final int? age;
   final String? gender;
   final double? height;
@@ -214,8 +269,10 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
   final UserGoalModel longTermGoal;
   final UserGoalModel dailyGoal;
   const UsersTableData({
-    required this.id,
+    required this.uid,
     required this.name,
+    required this.email,
+    this.profileImageUrl,
     this.age,
     this.gender,
     this.height,
@@ -226,8 +283,12 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
+    map['uid'] = Variable<String>(uid);
     map['name'] = Variable<String>(name);
+    map['email'] = Variable<String>(email);
+    if (!nullToAbsent || profileImageUrl != null) {
+      map['profile_image_url'] = Variable<String>(profileImageUrl);
+    }
     if (!nullToAbsent || age != null) {
       map['age'] = Variable<int>(age);
     }
@@ -255,8 +316,13 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
 
   UsersTableCompanion toCompanion(bool nullToAbsent) {
     return UsersTableCompanion(
-      id: Value(id),
+      uid: Value(uid),
       name: Value(name),
+      email: Value(email),
+      profileImageUrl:
+          profileImageUrl == null && nullToAbsent
+              ? const Value.absent()
+              : Value(profileImageUrl),
       age: age == null && nullToAbsent ? const Value.absent() : Value(age),
       gender:
           gender == null && nullToAbsent ? const Value.absent() : Value(gender),
@@ -275,8 +341,10 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return UsersTableData(
-      id: serializer.fromJson<int>(json['id']),
+      uid: serializer.fromJson<String>(json['uid']),
       name: serializer.fromJson<String>(json['name']),
+      email: serializer.fromJson<String>(json['email']),
+      profileImageUrl: serializer.fromJson<String?>(json['profileImageUrl']),
       age: serializer.fromJson<int?>(json['age']),
       gender: serializer.fromJson<String?>(json['gender']),
       height: serializer.fromJson<double?>(json['height']),
@@ -293,8 +361,10 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
+      'uid': serializer.toJson<String>(uid),
       'name': serializer.toJson<String>(name),
+      'email': serializer.toJson<String>(email),
+      'profileImageUrl': serializer.toJson<String?>(profileImageUrl),
       'age': serializer.toJson<int?>(age),
       'gender': serializer.toJson<String?>(gender),
       'height': serializer.toJson<double?>(height),
@@ -309,8 +379,10 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
   }
 
   UsersTableData copyWith({
-    int? id,
+    String? uid,
     String? name,
+    String? email,
+    Value<String?> profileImageUrl = const Value.absent(),
     Value<int?> age = const Value.absent(),
     Value<String?> gender = const Value.absent(),
     Value<double?> height = const Value.absent(),
@@ -318,8 +390,11 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
     UserGoalModel? longTermGoal,
     UserGoalModel? dailyGoal,
   }) => UsersTableData(
-    id: id ?? this.id,
+    uid: uid ?? this.uid,
     name: name ?? this.name,
+    email: email ?? this.email,
+    profileImageUrl:
+        profileImageUrl.present ? profileImageUrl.value : this.profileImageUrl,
     age: age.present ? age.value : this.age,
     gender: gender.present ? gender.value : this.gender,
     height: height.present ? height.value : this.height,
@@ -329,8 +404,13 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
   );
   UsersTableData copyWithCompanion(UsersTableCompanion data) {
     return UsersTableData(
-      id: data.id.present ? data.id.value : this.id,
+      uid: data.uid.present ? data.uid.value : this.uid,
       name: data.name.present ? data.name.value : this.name,
+      email: data.email.present ? data.email.value : this.email,
+      profileImageUrl:
+          data.profileImageUrl.present
+              ? data.profileImageUrl.value
+              : this.profileImageUrl,
       age: data.age.present ? data.age.value : this.age,
       gender: data.gender.present ? data.gender.value : this.gender,
       height: data.height.present ? data.height.value : this.height,
@@ -346,8 +426,10 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
   @override
   String toString() {
     return (StringBuffer('UsersTableData(')
-          ..write('id: $id, ')
+          ..write('uid: $uid, ')
           ..write('name: $name, ')
+          ..write('email: $email, ')
+          ..write('profileImageUrl: $profileImageUrl, ')
           ..write('age: $age, ')
           ..write('gender: $gender, ')
           ..write('height: $height, ')
@@ -360,8 +442,10 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
 
   @override
   int get hashCode => Object.hash(
-    id,
+    uid,
     name,
+    email,
+    profileImageUrl,
     age,
     gender,
     height,
@@ -373,8 +457,10 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is UsersTableData &&
-          other.id == this.id &&
+          other.uid == this.uid &&
           other.name == this.name &&
+          other.email == this.email &&
+          other.profileImageUrl == this.profileImageUrl &&
           other.age == this.age &&
           other.gender == this.gender &&
           other.height == this.height &&
@@ -384,88 +470,117 @@ class UsersTableData extends DataClass implements Insertable<UsersTableData> {
 }
 
 class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
-  final Value<int> id;
+  final Value<String> uid;
   final Value<String> name;
+  final Value<String> email;
+  final Value<String?> profileImageUrl;
   final Value<int?> age;
   final Value<String?> gender;
   final Value<double?> height;
   final Value<double?> weight;
   final Value<UserGoalModel> longTermGoal;
   final Value<UserGoalModel> dailyGoal;
+  final Value<int> rowid;
   const UsersTableCompanion({
-    this.id = const Value.absent(),
+    this.uid = const Value.absent(),
     this.name = const Value.absent(),
+    this.email = const Value.absent(),
+    this.profileImageUrl = const Value.absent(),
     this.age = const Value.absent(),
     this.gender = const Value.absent(),
     this.height = const Value.absent(),
     this.weight = const Value.absent(),
     this.longTermGoal = const Value.absent(),
     this.dailyGoal = const Value.absent(),
+    this.rowid = const Value.absent(),
   });
   UsersTableCompanion.insert({
-    this.id = const Value.absent(),
+    required String uid,
     required String name,
+    required String email,
+    this.profileImageUrl = const Value.absent(),
     this.age = const Value.absent(),
     this.gender = const Value.absent(),
     this.height = const Value.absent(),
     this.weight = const Value.absent(),
     required UserGoalModel longTermGoal,
     required UserGoalModel dailyGoal,
-  }) : name = Value(name),
+    this.rowid = const Value.absent(),
+  }) : uid = Value(uid),
+       name = Value(name),
+       email = Value(email),
        longTermGoal = Value(longTermGoal),
        dailyGoal = Value(dailyGoal);
   static Insertable<UsersTableData> custom({
-    Expression<int>? id,
+    Expression<String>? uid,
     Expression<String>? name,
+    Expression<String>? email,
+    Expression<String>? profileImageUrl,
     Expression<int>? age,
     Expression<String>? gender,
     Expression<double>? height,
     Expression<double>? weight,
     Expression<String>? longTermGoal,
     Expression<String>? dailyGoal,
+    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
-      if (id != null) 'id': id,
+      if (uid != null) 'uid': uid,
       if (name != null) 'name': name,
+      if (email != null) 'email': email,
+      if (profileImageUrl != null) 'profile_image_url': profileImageUrl,
       if (age != null) 'age': age,
       if (gender != null) 'gender': gender,
       if (height != null) 'height': height,
       if (weight != null) 'weight': weight,
       if (longTermGoal != null) 'long_term_goal': longTermGoal,
       if (dailyGoal != null) 'daily_goal': dailyGoal,
+      if (rowid != null) 'rowid': rowid,
     });
   }
 
   UsersTableCompanion copyWith({
-    Value<int>? id,
+    Value<String>? uid,
     Value<String>? name,
+    Value<String>? email,
+    Value<String?>? profileImageUrl,
     Value<int?>? age,
     Value<String?>? gender,
     Value<double?>? height,
     Value<double?>? weight,
     Value<UserGoalModel>? longTermGoal,
     Value<UserGoalModel>? dailyGoal,
+    Value<int>? rowid,
   }) {
     return UsersTableCompanion(
-      id: id ?? this.id,
+      uid: uid ?? this.uid,
       name: name ?? this.name,
+      email: email ?? this.email,
+      profileImageUrl: profileImageUrl ?? this.profileImageUrl,
       age: age ?? this.age,
       gender: gender ?? this.gender,
       height: height ?? this.height,
       weight: weight ?? this.weight,
       longTermGoal: longTermGoal ?? this.longTermGoal,
       dailyGoal: dailyGoal ?? this.dailyGoal,
+      rowid: rowid ?? this.rowid,
     );
   }
 
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
+    if (uid.present) {
+      map['uid'] = Variable<String>(uid.value);
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
+    }
+    if (email.present) {
+      map['email'] = Variable<String>(email.value);
+    }
+    if (profileImageUrl.present) {
+      map['profile_image_url'] = Variable<String>(profileImageUrl.value);
     }
     if (age.present) {
       map['age'] = Variable<int>(age.value);
@@ -489,20 +604,26 @@ class UsersTableCompanion extends UpdateCompanion<UsersTableData> {
         $UsersTableTable.$converterdailyGoal.toSql(dailyGoal.value),
       );
     }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
     return map;
   }
 
   @override
   String toString() {
     return (StringBuffer('UsersTableCompanion(')
-          ..write('id: $id, ')
+          ..write('uid: $uid, ')
           ..write('name: $name, ')
+          ..write('email: $email, ')
+          ..write('profileImageUrl: $profileImageUrl, ')
           ..write('age: $age, ')
           ..write('gender: $gender, ')
           ..write('height: $height, ')
           ..write('weight: $weight, ')
           ..write('longTermGoal: $longTermGoal, ')
-          ..write('dailyGoal: $dailyGoal')
+          ..write('dailyGoal: $dailyGoal, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
@@ -1636,6 +1757,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $ActivityHistoryTableTable(this);
   late final UserDao userDao = UserDao(this as AppDatabase);
   late final ExerciseDao exerciseDao = ExerciseDao(this as AppDatabase);
+  late final ActivityHistoryDao activityHistoryDao = ActivityHistoryDao(
+    this as AppDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1649,25 +1773,31 @@ abstract class _$AppDatabase extends GeneratedDatabase {
 
 typedef $$UsersTableTableCreateCompanionBuilder =
     UsersTableCompanion Function({
-      Value<int> id,
+      required String uid,
       required String name,
+      required String email,
+      Value<String?> profileImageUrl,
       Value<int?> age,
       Value<String?> gender,
       Value<double?> height,
       Value<double?> weight,
       required UserGoalModel longTermGoal,
       required UserGoalModel dailyGoal,
+      Value<int> rowid,
     });
 typedef $$UsersTableTableUpdateCompanionBuilder =
     UsersTableCompanion Function({
-      Value<int> id,
+      Value<String> uid,
       Value<String> name,
+      Value<String> email,
+      Value<String?> profileImageUrl,
       Value<int?> age,
       Value<String?> gender,
       Value<double?> height,
       Value<double?> weight,
       Value<UserGoalModel> longTermGoal,
       Value<UserGoalModel> dailyGoal,
+      Value<int> rowid,
     });
 
 class $$UsersTableTableFilterComposer
@@ -1679,13 +1809,23 @@ class $$UsersTableTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<int> get id => $composableBuilder(
-    column: $table.id,
+  ColumnFilters<String> get uid => $composableBuilder(
+    column: $table.uid,
     builder: (column) => ColumnFilters(column),
   );
 
   ColumnFilters<String> get name => $composableBuilder(
     column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get email => $composableBuilder(
+    column: $table.email,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get profileImageUrl => $composableBuilder(
+    column: $table.profileImageUrl,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1731,13 +1871,23 @@ class $$UsersTableTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<int> get id => $composableBuilder(
-    column: $table.id,
+  ColumnOrderings<String> get uid => $composableBuilder(
+    column: $table.uid,
     builder: (column) => ColumnOrderings(column),
   );
 
   ColumnOrderings<String> get name => $composableBuilder(
     column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get email => $composableBuilder(
+    column: $table.email,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get profileImageUrl => $composableBuilder(
+    column: $table.profileImageUrl,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -1781,11 +1931,19 @@ class $$UsersTableTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
+  GeneratedColumn<String> get uid =>
+      $composableBuilder(column: $table.uid, builder: (column) => column);
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get email =>
+      $composableBuilder(column: $table.email, builder: (column) => column);
+
+  GeneratedColumn<String> get profileImageUrl => $composableBuilder(
+    column: $table.profileImageUrl,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get age =>
       $composableBuilder(column: $table.age, builder: (column) => column);
@@ -1840,43 +1998,55 @@ class $$UsersTableTableTableManager
               () => $$UsersTableTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
-                Value<int> id = const Value.absent(),
+                Value<String> uid = const Value.absent(),
                 Value<String> name = const Value.absent(),
+                Value<String> email = const Value.absent(),
+                Value<String?> profileImageUrl = const Value.absent(),
                 Value<int?> age = const Value.absent(),
                 Value<String?> gender = const Value.absent(),
                 Value<double?> height = const Value.absent(),
                 Value<double?> weight = const Value.absent(),
                 Value<UserGoalModel> longTermGoal = const Value.absent(),
                 Value<UserGoalModel> dailyGoal = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
               }) => UsersTableCompanion(
-                id: id,
+                uid: uid,
                 name: name,
+                email: email,
+                profileImageUrl: profileImageUrl,
                 age: age,
                 gender: gender,
                 height: height,
                 weight: weight,
                 longTermGoal: longTermGoal,
                 dailyGoal: dailyGoal,
+                rowid: rowid,
               ),
           createCompanionCallback:
               ({
-                Value<int> id = const Value.absent(),
+                required String uid,
                 required String name,
+                required String email,
+                Value<String?> profileImageUrl = const Value.absent(),
                 Value<int?> age = const Value.absent(),
                 Value<String?> gender = const Value.absent(),
                 Value<double?> height = const Value.absent(),
                 Value<double?> weight = const Value.absent(),
                 required UserGoalModel longTermGoal,
                 required UserGoalModel dailyGoal,
+                Value<int> rowid = const Value.absent(),
               }) => UsersTableCompanion.insert(
-                id: id,
+                uid: uid,
                 name: name,
+                email: email,
+                profileImageUrl: profileImageUrl,
                 age: age,
                 gender: gender,
                 height: height,
                 weight: weight,
                 longTermGoal: longTermGoal,
                 dailyGoal: dailyGoal,
+                rowid: rowid,
               ),
           withReferenceMapper:
               (p0) =>

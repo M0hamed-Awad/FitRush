@@ -19,13 +19,13 @@ class UserDao extends DatabaseAccessor<AppDatabase> with _$UserDaoMixin {
   Stream<List<UsersTableData>> watchAllUsers() => select(usersTable).watch();
 
   // Get a user by ID
-  Future<UsersTableData?> getUserById(int id) {
+  Future<UsersTableData?> getUserByUid(String uid) {
     return (select(usersTable)
-      ..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
+      ..where((tbl) => tbl.uid.equals(uid))).getSingleOrNull();
   }
 
   // Delete a user
-  Future<int> deleteUser(int id) {
-    return (delete(usersTable)..where((tbl) => tbl.id.equals(id))).go();
+  Future<int> deleteUser(String uid) {
+    return (delete(usersTable)..where((tbl) => tbl.uid.equals(uid))).go();
   }
 }

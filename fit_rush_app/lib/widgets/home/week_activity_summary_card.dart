@@ -1,7 +1,6 @@
 import 'package:fit_rush_app/cubits/last_seven_days_health_cubit/last_seven_days_health_cubit.dart';
 import 'package:fit_rush_app/cubits/last_seven_days_health_cubit/last_seven_days_health_cubit_states.dart';
 import 'package:fit_rush_app/helper/navigation_helper.dart';
-import 'package:fit_rush_app/styles/colors.dart';
 import 'package:fit_rush_app/styles/sizes.dart';
 import 'package:fit_rush_app/views/screens/activity_progress_screen.dart';
 import 'package:fit_rush_app/widgets/common/custom_loading_indicator.dart';
