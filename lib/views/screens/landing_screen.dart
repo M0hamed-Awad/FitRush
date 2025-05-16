@@ -42,7 +42,6 @@ class LandingScreen extends StatelessWidget {
         return const LandingScreenBody();
       }
     }
-
     return const LandingScreenBody();
   }
 
@@ -54,7 +53,6 @@ class LandingScreen extends StatelessWidget {
         if (!snapshot.hasData) {
           return const Scaffold(body: Center(child: CustomLoadingIndicator()));
         }
-
         return snapshot.data!;
       },
     );
