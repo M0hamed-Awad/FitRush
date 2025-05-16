@@ -10,7 +10,7 @@ import 'package:fit_rush_app/styles/colors.dart';
 import 'package:flutter/material.dart';
 
 class AddActivityScreenBody extends StatefulWidget {
-  const AddActivityScreenBody({Key? key}) : super(key: key);
+  const AddActivityScreenBody({super.key});
 
   @override
   State<AddActivityScreenBody> createState() => _AddActivityScreenBodyState();

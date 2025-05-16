@@ -13,8 +13,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreenBody extends StatefulWidget {
+  const LoginScreenBody({super.key});
+
   @override
-  _LoginScreenBodyState createState() => _LoginScreenBodyState();
+  State<LoginScreenBody> createState() => _LoginScreenBodyState();
 }
 
 class _LoginScreenBodyState extends State<LoginScreenBody> {

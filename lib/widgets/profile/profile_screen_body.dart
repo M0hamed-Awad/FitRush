@@ -6,7 +6,6 @@ import 'package:fit_rush_app/models/bmi_model.dart';
 import 'package:fit_rush_app/styles/colors.dart';
 import 'package:fit_rush_app/styles/sizes.dart';
 import 'package:fit_rush_app/widgets/profile/daily_goals_widget.dart';
-import 'package:fit_rush_app/widgets/profile/long_term_goals_widget.dart';
 import 'package:fit_rush_app/widgets/profile/user_data_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -91,7 +90,6 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
                 // ),
 
                 // LongTermGoalsWidget(),
-
                 Divider(thickness: 2, height: 6),
                 Text(
                   "Daily Goals",

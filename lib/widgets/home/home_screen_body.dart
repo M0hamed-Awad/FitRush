@@ -1,5 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fit_rush_app/constants.dart';
 import 'package:fit_rush_app/cubits/today_health_cubit/today_health_cubit.dart';
 import 'package:fit_rush_app/cubits/today_health_cubit/today_health_cubit_states.dart';
 import 'package:fit_rush_app/cubits/user_cubit/user_cubit.dart';
@@ -7,7 +5,6 @@ import 'package:fit_rush_app/cubits/user_cubit/user_cubit_states.dart';
 import 'package:fit_rush_app/helper/navigation_helper.dart';
 import 'package:fit_rush_app/styles/sizes.dart';
 import 'package:fit_rush_app/views/screens/history_screen.dart';
-import 'package:fit_rush_app/views/screens/landing_screen.dart';
 import 'package:fit_rush_app/widgets/common/custom_progress_bar.dart';
 import 'package:fit_rush_app/widgets/home/daily_activity_progress_rings.dart';
 import 'package:fit_rush_app/widgets/home/daily_activity_stats.dart';
@@ -17,7 +14,6 @@ import 'package:fit_rush_app/widgets/home/week_activity_summary_card.dart';
 import 'package:fit_rush_app/widgets/home/welcome_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreenBody extends StatelessWidget {
   const HomeScreenBody({super.key});

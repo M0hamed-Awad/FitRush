@@ -18,6 +18,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpScreenBody extends StatefulWidget {
+  const SignUpScreenBody({super.key});
+
   @override
   State<SignUpScreenBody> createState() => _SignUpScreenBodyState();
 }
@@ -378,7 +380,7 @@ class _SignUpScreenBodyState extends State<SignUpScreenBody> {
 
         final allUsers = await userDao.getAllUsers();
         for (var user in allUsers) {
-          print("User: ${user.name}, Email: ${user.age}");
+          debugPrint("User: ${user.name}, Email: ${user.age}");
         }
       } else {
         // Handle failure (if it occurs)

@@ -42,7 +42,7 @@ class CustomSignUpTextField extends StatelessWidget {
         hintText: hint,
         hintStyle: const TextStyle(color: AppColors.kGreyColor),
         filled: false,
-        fillColor: Colors.black.withOpacity(0.2),
+        fillColor: const Color.fromRGBO(0, 0, 0, 0.2),
         border: OutlineInputBorder(borderRadius: AppSizes.kBorderRadius8),
       ),
     );
