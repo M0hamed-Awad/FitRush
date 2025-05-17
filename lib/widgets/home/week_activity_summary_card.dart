@@ -31,7 +31,10 @@ class _WeekActivitySummaryCardState extends State<WeekActivitySummaryCard> {
                 () => context.read<LastSevenDaysHealthCubit>().fetchWeekData(),
           );
         } else if (state is LastSevenDaysHealthLoaded) {
-          return _buildWeekActivitySummaryCard(weekSteps: state.steps);
+          return _buildWeekActivitySummaryCard(
+            weekSteps: state.steps,
+            weekCalories: state.calories,
+          );
         } else {
           return AppSizes.kEmptyWidget;
         }
@@ -39,11 +42,17 @@ class _WeekActivitySummaryCardState extends State<WeekActivitySummaryCard> {
     );
   }
 
-  Widget _buildWeekActivitySummaryCard({required List<num> weekSteps}) {
+  Widget _buildWeekActivitySummaryCard({
+    required List<num> weekSteps,
+    required List<num> weekCalories,
+  }) {
     return GestureDetector(
       onTap: _handleOnCardClicked,
       child: Card(
-        child: _buildWeekActivitySummaryCardBody(weekSteps: weekSteps),
+        child: _buildWeekActivitySummaryCardBody(
+          weekSteps: weekSteps,
+          weekCalories: weekCalories,
+        ),
       ),
     );
   }
@@ -55,7 +64,10 @@ class _WeekActivitySummaryCardState extends State<WeekActivitySummaryCard> {
     );
   }
 
-  Widget _buildWeekActivitySummaryCardBody({required List<num> weekSteps}) {
+  Widget _buildWeekActivitySummaryCardBody({
+    required List<num> weekSteps,
+    required List<num> weekCalories,
+  }) {
     return Padding(
       padding: AppSizes.kPadding16,
       child: Column(
@@ -74,7 +86,7 @@ class _WeekActivitySummaryCardState extends State<WeekActivitySummaryCard> {
             "Last 7 Days",
             style: TextStyle(fontSize: 14, color: Colors.grey),
           ),
-          MiniWeekLineChart(weeklySteps: weekSteps),
+          MiniWeekLineChart(weekSteps: weekSteps, weekCalories: weekCalories),
         ],
       ),
     );
