@@ -207,7 +207,11 @@ class HealthService {
     required List<HealthDataType> types,
   }) async {
     List<num> lastNDayData = [];
+<<<<<<< HEAD
     for (int i = numberOfDays - 1; i >= 0; i--) {
+=======
+    for (int i = numberOfDays; i >= 0; i--) {
+>>>>>>> 8d7ac045887d5072660595c932c4fe28a1dfc50f
       final dayStart = _startOfTodayTime.subtract(Duration(days: i));
 
       // sets the start of a specific day at 00:00
