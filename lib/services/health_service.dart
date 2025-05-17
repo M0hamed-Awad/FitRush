@@ -136,7 +136,9 @@ class HealthService {
 
       return average;
     } catch (e) {
-      debugPrint('[DEBUG ERROR] Fetching today\'s Average Heart Rate failed: $e');
+      debugPrint(
+        '[DEBUG ERROR] Fetching today\'s Average Heart Rate failed: $e',
+      );
       return null;
     }
   }
@@ -207,6 +209,7 @@ class HealthService {
     required List<HealthDataType> types,
   }) async {
     List<num> lastNDayData = [];
+
     for (int i = numberOfDays - 1; i >= 0; i--) {
       final dayStart = _startOfTodayTime.subtract(Duration(days: i));
 
