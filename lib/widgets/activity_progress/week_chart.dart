@@ -22,6 +22,8 @@ class WeekChart extends StatelessWidget {
       height: 200,
       padding: EdgeInsets.only(left: 20),
       child: BarChart(
+        duration: Duration(milliseconds: 400),
+        curve: Curves.easeOut,
         BarChartData(
           backgroundColor: AppColors.kLightGreyColor,
           alignment: BarChartAlignment.spaceAround,
@@ -125,10 +127,7 @@ class WeekChart extends StatelessWidget {
             show: true,
             alignment: Alignment.topCenter,
             labelResolver: (_) => '$maxDataAmount',
-            style: TextStyle(
-              fontSize: 10,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+            style: TextStyle(fontSize: 10, color: AppColors.kNeutralDarkColor),
           ),
         ),
       ],
