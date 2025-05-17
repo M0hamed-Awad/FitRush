@@ -37,10 +37,10 @@ class ActivityProgressScreenBody extends StatelessWidget {
   }
 
   Padding _buildWeekChartBody({
-    required List<int> lastSevenDaysSteps,
+    required List<num> lastSevenDaysSteps,
     required BuildContext context,
   }) {
-    final int totalSteps = lastSevenDaysSteps.fold(
+    final num totalSteps = lastSevenDaysSteps.fold(
       0,
       (sum, value) => sum + value,
     );
@@ -70,7 +70,7 @@ class ActivityProgressScreenBody extends StatelessWidget {
 
   Widget _buildLastSevenDaysActivities(
     BuildContext context, {
-    required List<int> weeklySteps,
+    required List<num> weeklySteps,
   }) {
     return Container(
       margin: AppSizes.kMarginTop16,
@@ -86,7 +86,7 @@ class ActivityProgressScreenBody extends StatelessWidget {
 
   List<Widget> _buildWeeklyActivityCards({
     required BuildContext context,
-    required List<int> weeklySteps,
+    required List<num> weeklySteps,
   }) {
     final now = DateTime.now();
 
@@ -118,7 +118,7 @@ class ActivityProgressScreenBody extends StatelessWidget {
 
   Widget _buildDayActivityCard({
     required String dateString,
-    required int totalAmount,
+    required num totalAmount,
     required String dataType,
     required BuildContext context,
   }) {
@@ -140,7 +140,7 @@ class ActivityProgressScreenBody extends StatelessWidget {
 
   Widget _buildDayActivityCardBody({
     required String dateString,
-    required int totalAmount,
+    required num totalAmount,
     required String dataType,
     required BuildContext context,
   }) {
@@ -164,7 +164,7 @@ class ActivityProgressScreenBody extends StatelessWidget {
 
   Row _buildActivityTotalAmountRow(
     BuildContext context, {
-    required int totalSteps,
+    required num totalSteps,
   }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

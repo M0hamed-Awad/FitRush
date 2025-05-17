@@ -5,8 +5,8 @@ class LastSevenDaysHealthInitial extends LastSevenDaysHealthState {}
 class LastSevenDaysHealthLoading extends LastSevenDaysHealthState {}
 
 class LastSevenDaysHealthLoaded extends LastSevenDaysHealthState {
-  final List<int> steps;
-  final List<double> calories;
+  final List<num> steps;
+  final List<num> calories;
 
   LastSevenDaysHealthLoaded({required this.steps, required this.calories});
 }

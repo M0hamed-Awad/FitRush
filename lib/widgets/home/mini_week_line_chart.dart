@@ -3,7 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class MiniWeekLineChart extends StatelessWidget {
-  final List<int> weeklySteps;
+  final List<num> weeklySteps;
 
   const MiniWeekLineChart({super.key, required this.weeklySteps});
 

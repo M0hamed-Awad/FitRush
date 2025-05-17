@@ -3,14 +3,14 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class WeekChart extends StatelessWidget {
-  final List<int> lastSevenDaysSteps;
+  final List<num> lastSevenDaysSteps;
   const WeekChart({super.key, required this.lastSevenDaysSteps});
 
   @override
   Widget build(BuildContext context) {
     final List<String> weekdays = _generateLast7DaysLabels();
 
-    final int maxSteps = lastSevenDaysSteps.reduce((a, b) => a > b ? a : b);
+    final num maxSteps = lastSevenDaysSteps.reduce((a, b) => a > b ? a : b);
     final int stepInterval = 2000;
 
     return Container(
@@ -22,8 +22,8 @@ class WeekChart extends StatelessWidget {
           alignment: BarChartAlignment.spaceAround,
           maxY: maxSteps.toDouble() + 1000,
           barGroups: _buildBardGroupsList(),
-          titlesData: _buildGraphTitles(weekdays, stepInterval, maxSteps),
-          extraLinesData: _buildHorizontalGraphLines(maxSteps),
+          titlesData: _buildGraphTitles(weekdays, stepInterval, maxSteps.toInt()),
+          extraLinesData: _buildHorizontalGraphLines(maxSteps.toInt()),
           barTouchData: BarTouchData(enabled: false),
           gridData: FlGridData(show: false),
           borderData: FlBorderData(show: false),

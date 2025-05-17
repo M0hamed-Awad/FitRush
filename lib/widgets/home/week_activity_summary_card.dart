@@ -39,7 +39,7 @@ class _WeekActivitySummaryCardState extends State<WeekActivitySummaryCard> {
     );
   }
 
-  Widget _buildWeekActivitySummaryCard({required List<int> weekSteps}) {
+  Widget _buildWeekActivitySummaryCard({required List<num> weekSteps}) {
     return GestureDetector(
       onTap: _handleOnCardClicked,
       child: Card(
@@ -55,7 +55,7 @@ class _WeekActivitySummaryCardState extends State<WeekActivitySummaryCard> {
     );
   }
 
-  Widget _buildWeekActivitySummaryCardBody({required List<int> weekSteps}) {
+  Widget _buildWeekActivitySummaryCardBody({required List<num> weekSteps}) {
     return Padding(
       padding: AppSizes.kPadding16,
       child: Column(
