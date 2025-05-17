@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class AppTextStyles {
   static const TextStyle kActivityTextDate = TextStyle(
-    color: AppColors.kLightGreyColor,
+    color: AppColors.kGreyColor,
     fontWeight: FontWeight.w300,
     fontSize: 12,
     fontFamily: "Inter",
