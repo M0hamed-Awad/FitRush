@@ -49,7 +49,7 @@ class _DailyActivityProgressRingsState
     required BuildContext context,
   }) {
     return Container(
-      margin: AppSizes.kMarginV32,
+      margin: AppSizes.kMarginBottom20,
       child: Column(
         spacing: AppSizes.kSpacing16,
         children: [
@@ -76,10 +76,7 @@ class _DailyActivityProgressRingsState
           Icons.local_fire_department_rounded,
           color: AppColors.kAccentOrangeColor,
         ),
-        Text(
-          "Calories",
-          style:  AppTextStyles.kRingsDataText,
-        ),
+        Text("Calories", style: AppTextStyles.kRingsDataText),
       ],
     );
   }

@@ -52,7 +52,7 @@ class HomeScreenBody extends StatelessWidget {
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: AppSizes.kSpacing16,
+                    spacing: AppSizes.kSpacing8,
                     children: [
                       // Welcome card
                       WelcomeCard(),
@@ -74,6 +74,8 @@ class HomeScreenBody extends StatelessWidget {
 
                       // Weekly Activity Summary Card
                       WeekActivitySummaryCard(),
+
+                      AppSizes.kSizeH12,
 
                       // History
                       HistoryNavigateCard(
@@ -117,7 +119,7 @@ class HomeScreenBody extends StatelessWidget {
         spacing: 8,
         children: [
           CustomProgressBar(
-            percent: goalProgressPercent,
+            percent: double.parse((goalProgressPercent).toStringAsFixed(1)),
             title: "Daily Goal Progress",
           ),
           Padding(
