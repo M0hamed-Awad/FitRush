@@ -3,14 +3,19 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class WeekChart extends StatelessWidget {
-  final List<num> lastSevenDaysSteps;
-  const WeekChart({super.key, required this.lastSevenDaysSteps});
+  final List<num> lastSevenDaysData;
+  final bool isSteps;
+  const WeekChart({
+    super.key,
+    required this.lastSevenDaysData,
+    required this.isSteps,
+  });
 
   @override
   Widget build(BuildContext context) {
     final List<String> weekdays = _generateLast7DaysLabels();
 
-    final num maxSteps = lastSevenDaysSteps.reduce((a, b) => a > b ? a : b);
+    final num maxDataAmount = lastSevenDaysData.reduce((a, b) => a > b ? a : b);
     final int stepInterval = 2000;
 
     return Container(
@@ -20,10 +25,17 @@ class WeekChart extends StatelessWidget {
         BarChartData(
           backgroundColor: AppColors.kLightGreyColor,
           alignment: BarChartAlignment.spaceAround,
-          maxY: maxSteps.toDouble() + 1000,
+          maxY: maxDataAmount.toDouble() + 1000,
           barGroups: _buildBardGroupsList(),
-          titlesData: _buildGraphTitles(weekdays, stepInterval, maxSteps.toInt()),
-          extraLinesData: _buildHorizontalGraphLines(maxSteps.toInt()),
+          titlesData: _buildGraphTitles(
+            weekdays,
+            stepInterval,
+            maxDataAmount.toInt(),
+          ),
+          extraLinesData: _buildHorizontalGraphLines(
+            maxDataAmount: maxDataAmount.toInt(),
+            context,
+          ),
           barTouchData: BarTouchData(enabled: false),
           gridData: FlGridData(show: false),
           borderData: FlBorderData(show: false),
@@ -56,7 +68,13 @@ class WeekChart extends StatelessWidget {
             return Text(
               (value == 0) ? "" : value.toInt().toString(),
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 8, color: AppColors.kBlueColor),
+              style: TextStyle(
+                fontSize: 8,
+                color:
+                    isSteps
+                        ? AppColors.kBlueColor
+                        : AppColors.kAccentOrangeColor,
+              ),
             );
           }
           return SizedBox.shrink();
@@ -92,19 +110,25 @@ class WeekChart extends StatelessWidget {
     );
   }
 
-  ExtraLinesData _buildHorizontalGraphLines(int maxSteps) {
+  ExtraLinesData _buildHorizontalGraphLines(
+    BuildContext context, {
+    required int maxDataAmount,
+  }) {
     return ExtraLinesData(
       horizontalLines: [
         HorizontalLine(
-          y: (maxSteps + 100).toDouble(),
+          y: (maxDataAmount + 100).toDouble(),
           dashArray: [6, 4],
-          color: AppColors.kBlueColor,
+          color: isSteps ? AppColors.kBlueColor : AppColors.kAccentOrangeColor,
           strokeWidth: 1,
           label: HorizontalLineLabel(
             show: true,
             alignment: Alignment.topCenter,
-            labelResolver: (_) => '$maxSteps',
-            style: TextStyle(fontSize: 10, color: AppColors.kPrimaryColor),
+            labelResolver: (_) => '$maxDataAmount',
+            style: TextStyle(
+              fontSize: 10,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
           ),
         ),
       ],
@@ -117,8 +141,9 @@ class WeekChart extends StatelessWidget {
         x: index,
         barRods: [
           BarChartRodData(
-            toY: lastSevenDaysSteps[index].toDouble(),
-            color: AppColors.kBlueColor,
+            toY: lastSevenDaysData[index].toDouble(),
+            color:
+                isSteps ? AppColors.kBlueColor : AppColors.kAccentOrangeColor,
             borderRadius: BorderRadius.circular(4),
             width: 14,
             borderSide: BorderSide.none,

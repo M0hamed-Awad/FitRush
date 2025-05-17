@@ -9,9 +9,17 @@ import 'package:fit_rush_app/widgets/common/fail_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ActivityProgressScreenBody extends StatelessWidget {
+class ActivityProgressScreenBody extends StatefulWidget {
   const ActivityProgressScreenBody({super.key});
 
+  @override
+  State<ActivityProgressScreenBody> createState() =>
+      _ActivityProgressScreenBodyState();
+}
+
+class _ActivityProgressScreenBodyState
+    extends State<ActivityProgressScreenBody> {
+  bool _isSteps = true;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LastSevenDaysHealthCubit, LastSevenDaysHealthState>(
@@ -26,7 +34,7 @@ class ActivityProgressScreenBody extends StatelessWidget {
           );
         } else if (state is LastSevenDaysHealthLoaded) {
           return _buildWeekChartBody(
-            lastSevenDaysSteps: state.steps,
+            lastSevenDaysData: _isSteps ? state.steps : state.calories,
             context: context,
           );
         } else {
@@ -37,10 +45,10 @@ class ActivityProgressScreenBody extends StatelessWidget {
   }
 
   Padding _buildWeekChartBody({
-    required List<num> lastSevenDaysSteps,
+    required List<num> lastSevenDaysData,
     required BuildContext context,
   }) {
-    final num totalSteps = lastSevenDaysSteps.fold(
+    final num totalSteps = lastSevenDaysData.fold(
       0,
       (sum, value) => sum + value,
     );
@@ -51,20 +59,63 @@ class ActivityProgressScreenBody extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _buildActivityDateText(context),
-            _buildActivityTotalAmountRow(context, totalSteps: totalSteps),
+            _buildScreenTitleWidget(totalSteps: totalSteps, context),
             AppSizes.kSizeH24,
             Padding(
               padding: AppSizes.kPadding8,
-              child: WeekChart(lastSevenDaysSteps: lastSevenDaysSteps),
+              child: WeekChart(
+                lastSevenDaysData: lastSevenDaysData,
+                isSteps: _isSteps,
+              ),
             ),
             _buildLastSevenDaysActivities(
               context,
-              weeklySteps: lastSevenDaysSteps,
+              weeklySteps: lastSevenDaysData,
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildScreenTitleWidget(
+    BuildContext context, {
+    required num totalSteps,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        IconButton(
+          onPressed: () {
+            setState(() {
+              _isSteps = !_isSteps;
+            });
+          },
+          icon: Icon(
+            Icons.arrow_back_rounded,
+            color: Theme.of(context).colorScheme.onSurface,
+            size: 22,
+          ),
+        ),
+        Column(
+          children: [
+            _buildActivityDateText(context),
+            _buildActivityTotalAmountRow(context, totalDataAmount: totalSteps),
+          ],
+        ),
+        IconButton(
+          onPressed: () {
+            setState(() {
+              _isSteps = !_isSteps;
+            });
+          },
+          icon: Icon(
+            Icons.arrow_forward_rounded,
+            color: Theme.of(context).colorScheme.onSurface,
+            size: 22,
+          ),
+        ),
+      ],
     );
   }
 
@@ -97,7 +148,7 @@ class ActivityProgressScreenBody extends StatelessWidget {
       return _buildDayActivityCard(
         dateString: dateString,
         totalAmount: weeklySteps[6 - index], // access steps in reverse order
-        dataType: "Steps",
+        dataType: _isSteps ? "Steps" : "Calories",
         context: context,
       );
     });
@@ -154,7 +205,7 @@ class ActivityProgressScreenBody extends StatelessWidget {
         children: [
           Text(dateString, style: AppTextStyles.kActivityTextDate),
           Text(
-            "$totalAmount $dataType",
+            "${totalAmount.toInt()} $dataType",
             style: AppTextStyles.kActivityTextData,
           ),
         ],
@@ -164,15 +215,20 @@ class ActivityProgressScreenBody extends StatelessWidget {
 
   Row _buildActivityTotalAmountRow(
     BuildContext context, {
-    required num totalSteps,
+    required num totalDataAmount,
   }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: AppSizes.kSpacing8,
       children: [
-        Icon(Icons.directions_run_rounded, color: AppColors.kBlueColor),
+        Icon(
+          _isSteps
+              ? Icons.directions_run_rounded
+              : Icons.local_fire_department_rounded,
+          color: _isSteps ? AppColors.kBlueColor : AppColors.kAccentOrangeColor,
+        ),
         Text(
-          "$totalSteps Steps",
+          "${totalDataAmount.toInt()} ${_isSteps ? "Steps" : "Calories"}",
           style: TextStyle(
             fontWeight: FontWeight.w300,
             fontSize: 12,
