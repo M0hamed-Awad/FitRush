@@ -96,7 +96,7 @@ class _SignUpScreenBodyState extends State<SignUpScreenBody> {
                 children: [
                   Text(
                     "Already have an account?",
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                   ),
                   TextButton(
                     onPressed: () {
