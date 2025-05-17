@@ -7,6 +7,13 @@ import 'package:permission_handler/permission_handler.dart';
 class HealthService {
   static final Health _healthInstance = Health();
 
+  static final DateTime _currentDayTime = DateTime.now();
+  static final DateTime _startOfTodayTime = DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+    DateTime.now().day,
+  );
+
   static Future<bool> requestHealthPermissions() async {
     // Configure Health Package
     await _healthInstance.configure();
@@ -18,12 +25,12 @@ class HealthService {
   static Future<bool> _checkForPermissions() async {
     List<HealthDataType> types = [
       HealthDataType.STEPS,
-      HealthDataType.ACTIVE_ENERGY_BURNED,
       Platform.isIOS
           ? HealthDataType.DISTANCE_WALKING_RUNNING
           : HealthDataType.DISTANCE_DELTA,
 
       HealthDataType.HEART_RATE,
+      HealthDataType.TOTAL_CALORIES_BURNED,
     ];
     const permissions = [
       HealthDataAccess.READ,
@@ -53,182 +60,256 @@ class HealthService {
     }
   }
 
+  // =========================================================================//
+  // Today's Data //
+  // =========================================================================//
+
+  // Today's Steps
   static Future<int?> getTodaysSteps() async {
     try {
-      final now = DateTime.now();
-      final midnight = DateTime(now.year, now.month, now.day);
-      // endTime.subtract(Duration(days: 1));
-
-      debugPrint('[DEBUG] Fetching steps from: $midnight to $now');
-
-      final rawData = await _healthInstance.getHealthDataFromTypes(
-        startTime: midnight,
-        endTime: now,
-        types: [HealthDataType.STEPS],
-      );
-      debugPrint('[DEBUG] Raw step data: ${rawData.length} entries');
-      debugPrint('[DEBUG] Raw data: $rawData');
+      debugPrint("[DEBUG] Fetching Today's Steps...");
 
       final steps = await _healthInstance.getTotalStepsInInterval(
-        midnight,
-        now,
+        _startOfTodayTime,
+        _currentDayTime,
       );
 
       debugPrint('[DEBUG] Total Steps: $steps');
-
       return steps;
     } catch (e) {
-      debugPrint('[ERROR] Step fetch failed: ${e.toString()}');
+      debugPrint('[DEBUG ERROR] Step fetch failed: ${e.toString()}');
       return null;
     }
   }
 
+  // Today's Calories
   static Future<double?> getTodaysCalories() async {
-    final now = DateTime.now();
-    final midnight = DateTime(now.year, now.month, now.day);
-
-    List<HealthDataPoint> data = await _healthInstance.getHealthDataFromTypes(
-      startTime: midnight,
-      endTime: now,
-      types: [HealthDataType.ACTIVE_ENERGY_BURNED],
-    );
-
-    for (final point in data) {
-      debugPrint(
-        '[DEBUG] Calories Point: ${point.value}, source: ${point.sourceName}',
-      );
-    }
-
-    double totalCalories = data.fold(
-      0.0,
-      (sum, point) => sum + (point.value as double),
-    );
-
-    debugPrint('[DEBUG] Total Calories: $totalCalories');
-
-    return totalCalories;
-  }
-
-  static Future<double?> getTodaysDistanceCovered() async {
-    final (startTime, endTime) = _getTodaysInterval();
-
-    List<HealthDataPoint> data = await _healthInstance.getHealthDataFromTypes(
-      startTime: startTime,
-      endTime: endTime,
-      types: [HealthDataType.DISTANCE_DELTA],
-    );
-
-    double totalDistance = data.fold(
-      0.0,
-      (sum, point) => sum + (point.value as NumericHealthValue).numericValue,
-    );
-
-    double roundedDistance = double.parse(totalDistance.toStringAsFixed(2));
-
-    debugPrint('[DEBUG] Total Distance: $roundedDistance');
-
-    return roundedDistance;
-  }
-
-  static Future<double?> getTodaysAverageHeartRate() async {
-    final (startTime, endTime) = _getTodaysInterval();
-
-    final heartRateData = await _healthInstance.getHealthDataFromTypes(
-      startTime: startTime,
-      endTime: endTime,
-      types: [HealthDataType.HEART_RATE],
-    );
-
-    // removing duplicates
-    final cleanedData = _healthInstance.removeDuplicates(heartRateData);
-
-    // Filter only valid heart rate values and calculate average
-    final values =
-        cleanedData
-            .where((point) => point.value is double || point.value is int)
-            .map((point) => (point.value as num).toDouble())
-            .toList();
-
-    if (values.isEmpty) return null;
-
-    final average = (values.reduce((a, b) => a + b)) / (values.length);
-
-    debugPrint('[DEBUG] Average Heart Rate: $average');
-
-    return average;
-  }
-
-  static (DateTime, DateTime) _getTodaysInterval() {
-    final now = DateTime.now();
-    return (DateTime(now.year, now.month, now.day), now);
-  }
-
-  static Future<List<int>> getLast7DaysSteps() async {
-    List<int> lastSevenDaysSteps = [];
-
     try {
-      final now = DateTime.now();
+      debugPrint("[DEBUG] Fetching Today's Calories...");
 
-      for (int i = 6; i >= 0; i--) {
-        final dayStart = DateTime(now.year, now.month, now.day).subtract(
-          Duration(days: i),
-        ); // sets the start of a specific day at 00:00
-        final dayEnd = dayStart.add(
-          Duration(days: 1),
-        ); // the next day at 00:00 (so it's a full 24-hour period)
+      final totalCalories = await _getTodayTotalDataValue(
+        types: [HealthDataType.TOTAL_CALORIES_BURNED],
+      );
 
-        final steps = await _healthInstance.getTotalStepsInInterval(
-          dayStart,
-          dayEnd,
-        );
+      debugPrint('[DEBUG] Total Calories: $totalCalories');
+      return totalCalories?.toDouble();
+    } catch (e) {
+      debugPrint('[DEBUG ERROR] Fetching today\'s calories failed: $e');
+      return null;
+    }
+  }
 
-        lastSevenDaysSteps.add(steps ?? 0); // if null, fallback to 0
-      }
+  // Today's Distance Covered
+  static Future<double?> getTodaysDistanceCovered() async {
+    try {
+      debugPrint("[DEBUG] Fetching Today's Distance Covered...");
+
+      final totalDistance = await _getTodayTotalDataValue(
+        types: [
+          Platform.isIOS
+              ? HealthDataType.DISTANCE_WALKING_RUNNING
+              : HealthDataType.DISTANCE_DELTA,
+        ],
+      );
+
+      debugPrint('[DEBUG] Total Distance: $totalDistance');
+      return totalDistance?.toDouble();
+    } catch (e) {
+      debugPrint('[DEBUG ERROR] Fetching today\'s distance covered failed: $e');
+      return null;
+    }
+  }
+
+  // Today's Average Heart Rate
+  static Future<double?> getTodaysAverageHeartRate() async {
+    try {
+      debugPrint("[DEBUG] Fetching Today's Average Heart Rate...");
+
+      List<HealthDataPoint> data = await _getTodayHealthDataPoints(
+        types: [HealthDataType.HEART_RATE],
+      );
+
+      // Get Heart Rate Average
+      final average = _getTodayAverageHeartRate(healthDataPoints: data);
+
+      debugPrint('[DEBUG] Average Heart Rate: $average');
+
+      return average;
+    } catch (e) {
+      debugPrint('[DEBUG ERROR] Fetching today\'s Average Heart Rate failed: $e');
+      return null;
+    }
+  }
+
+  // =========================================================================//
+  // Last 7 Days Data
+  // =========================================================================//
+
+  // Last 7 Days Steps
+  static Future<List<num>> getLast7DaysSteps() async {
+    try {
+      List<num> lastSevenDaysSteps = await _getLastNDaysData(
+        numberOfDays: 7,
+        types: [HealthDataType.STEPS],
+      );
 
       debugPrint('[DEBUG] Last 7 days Steps: $lastSevenDaysSteps');
       return lastSevenDaysSteps;
     } catch (e) {
-      debugPrint('[ERROR] Fetching weekly steps failed: $e');
+      debugPrint('[DEBUG ERROR] Fetching weekly steps failed: $e');
       return List.filled(7, 0); // fallback list of 0s
     }
   }
 
-  static Future<List<double>> getLast7DaysCalories() async {
-    List<double> lastSevenDayCalories = [];
-
+  // Last 7 Days Calories
+  static Future<List<num>> getLast7DaysCalories() async {
     try {
-      final now = DateTime.now();
-
-      for (int i = 6; i >= 0; i--) {
-        final dayStart = DateTime(
-          now.year,
-          now.month,
-          now.day,
-        ).subtract(Duration(days: i));
-        final dayEnd = dayStart.add(Duration(days: 1));
-
-        List<HealthDataPoint> data = await _healthInstance
-            .getHealthDataFromTypes(
-              startTime: dayStart,
-              endTime: dayEnd,
-              types: [HealthDataType.ACTIVE_ENERGY_BURNED],
-            );
-
-        double totalCalories = data.fold(
-          0.0,
-          (sum, point) => sum + (point.value as double),
-        );
-
-        debugPrint('[DEBUG] Total Calories: $totalCalories');
-
-        lastSevenDayCalories.add(totalCalories);
-      }
+      List<num> lastSevenDayCalories = await _getLastNDaysData(
+        numberOfDays: 7,
+        types: [HealthDataType.TOTAL_CALORIES_BURNED],
+      );
 
       debugPrint('[DEBUG] Last 7 days Calories: $lastSevenDayCalories');
       return lastSevenDayCalories;
     } catch (e) {
-      debugPrint('[ERROR] Fetching weekly Calories failed: $e');
+      debugPrint('[DEBUG ERROR] Fetching weekly Calories failed: $e');
       return List.filled(7, 0);
     }
+  }
+
+  // =========================================================================//
+  // Helper Functions  //
+  // =========================================================================//
+
+  // General
+
+  static double _extractDoubleValueFromNumericValue(HealthValue value) {
+    if (value is NumericHealthValue) {
+      return value.numericValue.toDouble();
+    }
+    return 0.0; // Fallback for Non a Numeric Values
+  }
+
+  static num _getTotalValueFromHealthDataPoints({
+    required List<HealthDataPoint> healthDataPoints,
+  }) {
+    num totalValue = healthDataPoints
+        .map((point) => _extractDoubleValueFromNumericValue(point.value))
+        .fold(0.0, (sum, val) => sum + val);
+
+    return totalValue;
+  }
+
+  // Get Interval of Days Data
+
+  static Future<List<num>> _getLastNDaysData({
+    required int numberOfDays,
+    required List<HealthDataType> types,
+  }) async {
+    List<num> lastNDayData = [];
+    for (int i = numberOfDays - 1; i >= 0; i--) {
+      final dayStart = _startOfTodayTime.subtract(Duration(days: i));
+
+      // sets the start of a specific day at 00:00
+      final dayEnd = dayStart.add(Duration(days: 1));
+
+      // the next day at 00:00
+      final dayData = await _getSpecificDayTotalData(
+        types: types,
+        startTime: dayStart,
+        endTime: dayEnd,
+      );
+
+      lastNDayData.add(dayData?.toDouble() ?? 0.0); // fallback list of 0s
+    }
+
+    return lastNDayData;
+  }
+
+  // Get Specific Day Data
+
+  static Future<num?> _getSpecificDayTotalData({
+    required List<HealthDataType> types,
+    required DateTime startTime,
+    required DateTime endTime,
+  }) async {
+    final todaysData = await _getSpecificDayHealthDataPoints(
+      types: types,
+      startTime: startTime,
+      endTime: endTime,
+    );
+
+    num totalTodaysData = _getTotalValueFromHealthDataPoints(
+      healthDataPoints: todaysData,
+    );
+
+    if (totalTodaysData is double) {
+      totalTodaysData = double.parse(totalTodaysData.toStringAsFixed(2));
+    }
+
+    return totalTodaysData;
+  }
+
+  static Future<List<HealthDataPoint>> _getSpecificDayHealthDataPoints({
+    required List<HealthDataType> types,
+    required DateTime startTime,
+    required DateTime endTime,
+  }) async {
+    List<HealthDataPoint> data = await _healthInstance.getHealthDataFromTypes(
+      startTime: startTime,
+      endTime: endTime,
+      types: types,
+    );
+
+    // removing duplicates
+    final cleanedData = _healthInstance.removeDuplicates(data);
+
+    return cleanedData;
+  }
+
+  // Get Today Data
+
+  static Future<num?> _getTodayTotalDataValue({
+    required List<HealthDataType> types,
+  }) async {
+    final todaysData = await _getSpecificDayTotalData(
+      types: types,
+      startTime: _startOfTodayTime,
+      endTime: _currentDayTime,
+    );
+
+    return todaysData;
+  }
+
+  // only for heart rate
+  static Future<List<HealthDataPoint>> _getTodayHealthDataPoints({
+    required List<HealthDataType> types,
+  }) async {
+    final data = await _getSpecificDayHealthDataPoints(
+      types: types,
+      startTime: _startOfTodayTime,
+      endTime: _currentDayTime,
+    );
+
+    return data;
+  }
+
+  static double? _getTodayAverageHeartRate({
+    required List<HealthDataPoint> healthDataPoints,
+  }) {
+    // Filter only valid heart rate values and calculate average
+    final values =
+        healthDataPoints
+            .map((point) => _extractDoubleValueFromNumericValue(point.value))
+            .whereType<double>()
+            .toList();
+
+    // No data is available
+    if (values.isEmpty) return null;
+
+    // Calculate Average
+    final average = (values.reduce((a, b) => a + b)) / (values.length);
+
+    return average;
   }
 }
