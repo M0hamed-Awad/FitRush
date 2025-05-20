@@ -44,6 +44,8 @@ class FitnessRings extends StatelessWidget {
       lineWidth: 14.0,
       percent: caloriesPercent,
       animation: true,
+      animationDuration: 1000,
+      curve: Curves.easeOut,
       circularStrokeCap: CircularStrokeCap.round,
       progressColor: AppColors.kAccentOrangeColor,
       backgroundColor: const Color.fromRGBO(255, 106, 43, 0.1),
@@ -56,6 +58,8 @@ class FitnessRings extends StatelessWidget {
       lineWidth: 18.0,
       percent: stepsPercent,
       animation: true,
+      animationDuration: 1000,
+      curve: Curves.easeOut,
       circularStrokeCap: CircularStrokeCap.round,
       progressColor: AppColors.kBlueColor,
       backgroundColor: const Color.fromRGBO(33, 150, 243, 0.1),
@@ -77,7 +81,7 @@ class FitnessRings extends StatelessWidget {
             ),
           ),
           Text(
-            "$currentCaloriesBurned",
+            "${currentCaloriesBurned.round().toInt()}",
             style: TextStyle(
               fontSize: 22,
               color: AppColors.kAccentOrangeColor,

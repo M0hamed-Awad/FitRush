@@ -12,6 +12,8 @@ class CustomPercentProgressBar extends StatelessWidget {
       percent: percent,
       lineHeight: 16,
       animation: true,
+      animationDuration: 1000,
+      curve: Curves.easeOut,
       barRadius: Radius.circular(24),
       progressColor: AppColors.kPrimaryColor,
       backgroundColor: AppColors.kSecondaryColorLight,
