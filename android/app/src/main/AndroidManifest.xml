@@ -31,7 +31,7 @@
     </queries>
 
     <application
-        android:label="fit_rush_app"
+        android:label="FitRush"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
