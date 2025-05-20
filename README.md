@@ -76,9 +76,9 @@ lib/
 
 ## Screenshots
 
-- **Landing Screen** 
+- **Landing Screen**  
   ![Landing Screen](screenshots/landing_screen.jpg "Landing Screen")  
-  _App Landing Screen._
+  _App’s initial landing screen shown to users on first launch._
 
 - **Login / Authentication Screen**  
   ![Login Screen](screenshots/login_screen.jpg "Login Screen")  
