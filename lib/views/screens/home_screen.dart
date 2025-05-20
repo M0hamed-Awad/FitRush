@@ -40,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
           width: 40,
           height: 40,
         ),
+        actions: [Icon(Icons.settings_rounded)],
       ),
       body: _buildHomeScreenBody(),
       bottomNavigationBar: CustomBottomNavigationBar(
