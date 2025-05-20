@@ -40,8 +40,6 @@ class LandingScreenBody extends StatelessWidget {
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
-                  //TODO
-                  // Navigate to Login
                   NavigationHelper.push(
                     destination: SignUpScreen(),
                     context: context,

@@ -11,6 +11,13 @@ class NavigationHelper {
     );
   }
 
+  static void pushNamed({
+    required String routeName,
+    required BuildContext context,
+  }) {
+    Navigator.pushNamed(context, routeName);
+  }
+
   static void pushReplacement({
     required Widget destination,
     required BuildContext context,
