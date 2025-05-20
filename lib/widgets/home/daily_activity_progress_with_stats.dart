@@ -22,13 +22,7 @@ class DailyActivityProgressWithStats extends StatelessWidget {
     return BlocBuilder<TodayHealthCubit, TodayHealthState>(
       builder: (context, state) {
         if (state is TodayHealthLoading) {
-          return const Center(
-            child: SizedBox(
-              width: 40,
-              height: 40,
-              child: CustomLoadingIndicator(),
-            ),
-          );
+          return _buildLoadingIndicator();
         } else if (state is TodayHealthFailed) {
           return FailWidget(
             errorMessage: state.errorMessage,
@@ -43,11 +37,17 @@ class DailyActivityProgressWithStats extends StatelessWidget {
     );
   }
 
+  Center _buildLoadingIndicator() {
+    return const Center(
+      child: SizedBox(width: 40, height: 40, child: CustomLoadingIndicator()),
+    );
+  }
+
   Column _buildMainContentBody({required TodayHealthLoaded state}) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
-      spacing: AppSizes.kSpacing32,
+      spacing: AppSizes.kSpacing16,
       children: [
         // Daily Goal Progress
         DailyActivityProgressRings(

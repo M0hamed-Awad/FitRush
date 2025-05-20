@@ -37,8 +37,8 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Image(
           image: AssetImage("assets/images/Logo-V2-red.png"),
-          width: 40,
-          height: 40,
+          width: 36,
+          height: 36,
         ),
         actions: [Icon(Icons.settings_rounded)],
       ),

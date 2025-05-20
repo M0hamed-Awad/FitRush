@@ -105,6 +105,8 @@ class HomeScreenBody extends StatelessWidget {
     required double goalCaloriesBurned,
   }) {
     return [
+      AppSizes.kSizeH4,
+
       // Welcome card
       WelcomeCard(),
 
@@ -114,6 +116,8 @@ class HomeScreenBody extends StatelessWidget {
         goalProgressPercent: goalDayProgressPercent,
         currentStepCount: todaySteps,
       ),
+
+      AppSizes.kSizeH4,
 
       // Daily Goal Progress & Stats Cards
       DailyActivityProgressWithStats(
