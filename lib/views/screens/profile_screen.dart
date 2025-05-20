@@ -11,7 +11,6 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(actions: [Icon(Icons.settings_rounded)]),
       body: BlocBuilder<UserCubit, UserState>(
         builder: (context, state) {
           if (state.user == null) {

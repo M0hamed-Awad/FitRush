@@ -29,8 +29,7 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
   }
 
   Future<void> callBmi() async {
-    final bmiService = BmiService();
-    final result = await bmiService.getBmi(
+    final result = await BmiService().getBmi(
       height: (widget.user?.height ?? 0).toInt(),
       weight: (widget.user?.weight ?? 0).toInt(),
     );
@@ -56,14 +55,10 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
                 Center(
                   child: Text(
                     "Profile",
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.kTextColorDark,
-                    ),
+                    style: Theme.of(context).textTheme.headlineMedium,
                   ),
                 ),
-                SizedBox(height: 8),
+                AppSizes.kSizeH8,
                 Center(
                   child: CircleAvatar(
                     backgroundColor: AppColors.kPrimaryColor,
@@ -76,41 +71,28 @@ class _ProfileScreenBodyState extends State<ProfileScreenBody> {
                     ),
                   ),
                 ),
-                SizedBox(height: 32),
 
-                // For Long Term Goals
+                AppSizes.kSizeH32,
 
-                // Divider(thickness: 2, height: 6),
-                // Text(
-                //   "Long Term Goals",
-                //   style: TextStyle(
-                //     fontSize: 18,
-                //     color: AppColors.kTextColorDark,
-                //   ),
-                // ),
+                Divider(),
 
-                // LongTermGoalsWidget(),
-                Divider(thickness: 2, height: 6),
-                Text(
-                  "Daily Goals",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: AppColors.kTextColorDark,
-                  ),
-                ),
+                AppSizes.kSizeH4,
+
+                // User Daily Goals
+                Text("Daily Goals", style: TextStyle(fontSize: 18)),
+
                 DailyGoalsWidget(
                   stepsGoal: widget.user?.dailyGoal.goalStepsCount ?? 0,
                   caloriesGoal: widget.user?.dailyGoal.goalCaloriesBurned ?? 0,
                 ),
 
-                Divider(thickness: 2, height: 6),
-                Text(
-                  "Your Data",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: AppColors.kTextColorDark,
-                  ),
-                ),
+                Divider(),
+
+                AppSizes.kSizeH4,
+
+                // User Data
+                Text("Your Data", style: TextStyle(fontSize: 18)),
+
                 UserDataWidget(
                   height: widget.user?.height ?? 0,
                   weight: widget.user?.weight ?? 0,
