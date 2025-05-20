@@ -92,6 +92,12 @@ class AppThemes {
     // Icons Theme
     iconTheme: IconThemeData(color: AppColors.kPrimaryColor, size: 24),
 
+    // Divider Theme
+    dividerTheme: DividerThemeData(
+      color: AppColors.kNeutralDarkColor,
+      thickness: 1,
+    ),
+
     // Shapes
     // Elevated Buttons Theme
     elevatedButtonTheme: ElevatedButtonThemeData(
@@ -195,6 +201,12 @@ class AppThemes {
 
     // Icons Theme
     iconTheme: IconThemeData(color: AppColors.kPrimaryColor, size: 24),
+
+    // Divider Theme
+    dividerTheme: DividerThemeData(
+      color: AppColors.kNeutralLightColor,
+      thickness: 1,
+    ),
 
     // Shapes
     // Elevated Buttons Theme
