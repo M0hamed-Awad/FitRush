@@ -101,7 +101,7 @@ class HealthService {
     try {
       debugPrint("[DEBUG] Fetching Today's Distance Covered...");
 
-      final totalDistance = await _getTodayTotalDataValue(
+      final num? totalDistance = await _getTodayTotalDataValue(
         types: [
           Platform.isIOS
               ? HealthDataType.DISTANCE_WALKING_RUNNING
@@ -136,6 +136,48 @@ class HealthService {
       debugPrint(
         '[DEBUG ERROR] Fetching today\'s Average Heart Rate failed: $e',
       );
+      return null;
+    }
+  }
+
+  static Future<int?> getTodaysActiveMinutes() async {
+    try {
+      debugPrint("[DEBUG] Fetching Today's Active Minutes...");
+
+      // Get Active Minutes for IOS
+      if (Platform.isIOS) {
+        final num? totalActiveMinutes = await _getTodayTotalDataValue(
+          types: [HealthDataType.EXERCISE_TIME],
+        );
+        debugPrint('[DEBUG] (iOS) Total Active Minutes: $totalActiveMinutes');
+        return totalActiveMinutes?.toInt();
+      }
+      // Get Active Minutes for Android
+      else if (Platform.isAndroid) {
+        final List<HealthDataPoint> workoutPoints =
+            await _getSpecificDayHealthDataPoints(
+              types: [HealthDataType.WORKOUT],
+              startTime: _startOfTodayTime,
+              endTime: _currentDayTime,
+            );
+
+        int totalActiveMinutes = 0;
+
+        for (var point in workoutPoints) {
+          final duration = point.dateTo.difference(point.dateFrom).inMinutes;
+          totalActiveMinutes += duration;
+        }
+
+        debugPrint(
+          '[DEBUG] (Android) Total Active Minutes: $totalActiveMinutes',
+        );
+        return totalActiveMinutes;
+      } else {
+        debugPrint("[DEBUG ERROR] Unsupported platform");
+        return null;
+      }
+    } catch (e) {
+      debugPrint('[DEBUG ERROR] Fetching today\'s Active Minutes failed: $e');
       return null;
     }
   }
