@@ -133,7 +133,7 @@ class HomeScreenBody extends StatelessWidget {
       HistoryNavigateCard(
         onTap: () {
           NavigationHelper.pushNamed(
-            routeName: kAddActivityScreenRouteName,
+            routeName: kActivityHistoryScreenRouteName,
             context: context,
           );
         },
