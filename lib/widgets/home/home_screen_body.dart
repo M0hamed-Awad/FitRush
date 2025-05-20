@@ -6,8 +6,7 @@ import 'package:fit_rush_app/cubits/user_cubit/user_cubit_states.dart';
 import 'package:fit_rush_app/helper/navigation_helper.dart';
 import 'package:fit_rush_app/styles/sizes.dart';
 import 'package:fit_rush_app/widgets/common/custom_progress_bar.dart';
-import 'package:fit_rush_app/widgets/home/daily_activity_progress_rings.dart';
-import 'package:fit_rush_app/widgets/home/daily_activity_stats.dart';
+import 'package:fit_rush_app/widgets/home/daily_activity_progress_with_stats.dart';
 import 'package:fit_rush_app/widgets/home/daily_motivation_card.dart';
 import 'package:fit_rush_app/widgets/home/history_navigate_card.dart';
 import 'package:fit_rush_app/widgets/home/week_activity_summary_card.dart';
@@ -60,6 +59,9 @@ class HomeScreenBody extends StatelessWidget {
                     todaySteps: todaySteps,
                     remainingStepsTowardsDailyGoal:
                         remainingStepsTowardsDailyGoal,
+                    goalStepsCount: userState.user!.dailyGoal.goalStepsCount,
+                    goalCaloriesBurned:
+                        userState.user!.dailyGoal.goalCaloriesBurned,
                   );
                 },
               );
@@ -77,24 +79,30 @@ class HomeScreenBody extends StatelessWidget {
     required double goalDayProgressPercent,
     required int todaySteps,
     required int remainingStepsTowardsDailyGoal,
+    required int goalStepsCount,
+    required double goalCaloriesBurned,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: AppSizes.kSpacing8,
-      children: _buildBodyColumnChildern(
+      children: _buildBodyColumnChildren(
         context,
         goalDayProgressPercent: goalDayProgressPercent,
         todaySteps: todaySteps,
         remainingStepsTowardsDailyGoal: remainingStepsTowardsDailyGoal,
+        goalStepsCount: goalStepsCount,
+        goalCaloriesBurned: goalCaloriesBurned,
       ),
     );
   }
 
-  List<Widget> _buildBodyColumnChildern(
+  List<Widget> _buildBodyColumnChildren(
     BuildContext context, {
     required double goalDayProgressPercent,
     required int todaySteps,
     required int remainingStepsTowardsDailyGoal,
+    required int goalStepsCount,
+    required double goalCaloriesBurned,
   }) {
     return [
       // Welcome card
@@ -107,13 +115,13 @@ class HomeScreenBody extends StatelessWidget {
         currentStepCount: todaySteps,
       ),
 
-      // Daily Goal Progress
-      DailyActivityProgressRings(),
+      // Daily Goal Progress & Stats Cards
+      DailyActivityProgressWithStats(
+        stepsGoalCount: goalStepsCount,
+        caloriesBurnedGoal: goalCaloriesBurned,
+      ),
 
-      // Daily Stats Cards
-      DailyActivityStats(),
-
-      AppSizes.kSizeH12,
+      AppSizes.kSizeH20,
 
       // Weekly Activity Summary Card
       WeekActivitySummaryCard(),

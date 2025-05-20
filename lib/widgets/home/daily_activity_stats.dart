@@ -1,14 +1,17 @@
-import 'package:fit_rush_app/cubits/today_health_cubit/today_health_cubit.dart';
-import 'package:fit_rush_app/cubits/today_health_cubit/today_health_cubit_states.dart';
 import 'package:fit_rush_app/styles/sizes.dart';
-import 'package:fit_rush_app/widgets/common/custom_loading_indicator.dart';
-import 'package:fit_rush_app/widgets/common/fail_widget.dart';
 import 'package:fit_rush_app/widgets/home/daily_stats_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DailyActivityStats extends StatelessWidget {
-  const DailyActivityStats({super.key});
+  final int stepsCount;
+  final double calories, heartRate, distance;
+  const DailyActivityStats({
+    super.key,
+    required this.stepsCount,
+    required this.calories,
+    required this.heartRate,
+    required this.distance,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,32 +19,17 @@ class DailyActivityStats extends StatelessWidget {
   }
 
   Widget _buildDailyActivityStatsBody() {
-    return BlocBuilder<TodayHealthCubit, TodayHealthState>(
-      builder: (context, state) {
-        if (state is TodayHealthLoading) {
-          return const Center(child: CustomLoadingIndicator());
-        } else if (state is TodayHealthFailed) {
-          return FailWidget(
-            errorMessage: state.errorMessage,
-            onRetry: () => context.read<TodayHealthCubit>().fetchTodayData(),
-          );
-        } else if (state is TodayHealthLoaded) {
-          return _buildDataStatsCards(state);
-        } else {
-          return AppSizes.kEmptyWidget;
-        }
-      },
-    );
+    return _buildDataStatsCards();
   }
 
-  Column _buildDataStatsCards(TodayHealthLoaded state) {
+  Column _buildDataStatsCards() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: AppSizes.kSpacing16,
+      spacing: AppSizes.kSpacing8,
       children: [
-        _buildFirstRow(stepsCount: state.steps, calories: state.calories),
-        _buildSecondRow(heartRate: state.heartRate, distance: state.distance),
+        _buildFirstRow(stepsCount: stepsCount, calories: calories),
+        _buildSecondRow(heartRate: heartRate, distance: distance),
       ],
     );
   }
