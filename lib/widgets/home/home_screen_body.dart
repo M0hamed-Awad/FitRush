@@ -5,7 +5,6 @@ import 'package:fit_rush_app/cubits/user_cubit/user_cubit.dart';
 import 'package:fit_rush_app/cubits/user_cubit/user_cubit_states.dart';
 import 'package:fit_rush_app/helper/navigation_helper.dart';
 import 'package:fit_rush_app/styles/sizes.dart';
-import 'package:fit_rush_app/views/screens/activities_history_screen.dart';
 import 'package:fit_rush_app/widgets/common/custom_progress_bar.dart';
 import 'package:fit_rush_app/widgets/home/daily_activity_progress_rings.dart';
 import 'package:fit_rush_app/widgets/home/daily_activity_stats.dart';
