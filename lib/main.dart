@@ -7,7 +7,7 @@ import 'package:fit_rush_app/firebase_options.dart';
 import 'package:fit_rush_app/styles/themes.dart';
 import 'package:fit_rush_app/views/screens/activity_progress_screen.dart';
 import 'package:fit_rush_app/views/screens/add_activity_screen.dart';
-import 'package:fit_rush_app/views/screens/history_screen.dart';
+import 'package:fit_rush_app/views/screens/activities_history_screen.dart';
 import 'package:fit_rush_app/views/screens/home_screen.dart';
 import 'package:fit_rush_app/views/screens/landing_screen.dart';
 import 'package:fit_rush_app/views/screens/login_screen.dart';
@@ -52,7 +52,7 @@ class FitRushApp extends StatelessWidget {
           "/home": (context) => HomeScreen(),
           "/addActivity": (context) => AddActivityScreen(),
           "/activityProgress": (context) => ActivityProgressScreen(),
-          "/activityHistory": (context) => ActivityHistoryScreen(),
+          "/activityHistory": (context) => ActivitiesHistoryScreen(),
           "/login": (context) => LoginScreen(),
           "/signup": (context) => SignUpScreen(),
           "/profile": (context) => ProfileScreen(),
