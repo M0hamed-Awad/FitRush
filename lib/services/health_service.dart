@@ -31,13 +31,10 @@ class HealthService {
 
       HealthDataType.HEART_RATE,
       HealthDataType.TOTAL_CALORIES_BURNED,
+      HealthDataType.WORKOUT,
     ];
-    const permissions = [
-      HealthDataAccess.READ,
-      HealthDataAccess.READ,
-      HealthDataAccess.READ,
-      HealthDataAccess.READ,
-    ];
+
+    final permissions = types.map((type) => HealthDataAccess.READ).toList();
 
     await Permission.activityRecognition.request();
     await Permission.sensors.request();
@@ -247,7 +244,7 @@ class HealthService {
     );
 
     if (totalTodaysData is double) {
-      totalTodaysData = double.parse(totalTodaysData.toStringAsFixed(2));
+      totalTodaysData = double.parse(totalTodaysData.toStringAsFixed(1));
     }
 
     return totalTodaysData;
