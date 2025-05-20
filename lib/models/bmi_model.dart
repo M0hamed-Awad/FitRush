@@ -7,7 +7,8 @@ class BmiModel {
   factory BmiModel.fromJson(Map<String, dynamic> json) {
     return BmiModel(
       bmi: double.parse((json['bmi'] as num).toStringAsFixed(1)),
-      weightStatus: json['weight_status']?.toString() ?? 'Unknown',
+      weightStatus:
+          json['bmiCategoryForAdults']['category']?.toString() ?? 'Unknown',
     );
   }
 }
