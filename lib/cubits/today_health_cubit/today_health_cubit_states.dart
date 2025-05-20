@@ -6,15 +6,15 @@ class TodayHealthLoading extends TodayHealthState {}
 
 class TodayHealthLoaded extends TodayHealthState {
   final int steps;
+  final int activeMinutes;
   final double calories;
   final double distance;
-  final double heartRate;
 
   TodayHealthLoaded({
     required this.steps,
+    required this.activeMinutes,
     required this.calories,
     required this.distance,
-    required this.heartRate,
   });
 }
 

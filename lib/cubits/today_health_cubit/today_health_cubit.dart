@@ -11,21 +11,19 @@ class TodayHealthCubit extends Cubit<TodayHealthState> {
       final steps = await HealthService.getTodaysSteps();
       final calories = await HealthService.getTodaysCalories();
       final distance = await HealthService.getTodaysDistanceCovered();
-      final heartRate = await HealthService.getTodaysAverageHeartRate();
+      final activeMinutes = await HealthService.getTodaysActiveMinutes();
 
       emit(
         TodayHealthLoaded(
           steps: steps ?? 0,
           calories: calories ?? 0.0,
           distance: distance ?? 0.0,
-          heartRate: heartRate ?? 0.0,
+          activeMinutes: activeMinutes ?? 0,
         ),
       );
     } catch (e) {
       emit(
-        TodayHealthFailed(
-          errorMessage: "Failed to fetch today's health data.",
-        ),
+        TodayHealthFailed(errorMessage: "Failed to fetch today's health data."),
       );
     }
   }
