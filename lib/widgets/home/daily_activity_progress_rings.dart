@@ -1,51 +1,37 @@
-import 'package:fit_rush_app/cubits/today_health_cubit/today_health_cubit.dart';
-import 'package:fit_rush_app/cubits/today_health_cubit/today_health_cubit_states.dart';
 import 'package:fit_rush_app/styles/colors.dart';
 import 'package:fit_rush_app/styles/sizes.dart';
 import 'package:fit_rush_app/styles/styles.dart';
-import 'package:fit_rush_app/widgets/common/custom_loading_indicator.dart';
-import 'package:fit_rush_app/widgets/common/fail_widget.dart';
 import 'package:fit_rush_app/widgets/home/fitness_rings.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-class DailyActivityProgressRings extends StatefulWidget {
-  const DailyActivityProgressRings({super.key});
+class DailyActivityProgressRings extends StatelessWidget {
+  final int currentStepsCount, stepsGoalCount;
+  final double currentCaloriesBurned, caloriesBurnedGoal;
 
-  @override
-  State<DailyActivityProgressRings> createState() =>
-      _DailyActivityProgressRingsState();
-}
+  const DailyActivityProgressRings({
+    super.key,
+    required this.currentStepsCount,
+    required this.currentCaloriesBurned,
+    required this.stepsGoalCount,
+    required this.caloriesBurnedGoal,
+  });
 
-class _DailyActivityProgressRingsState
-    extends State<DailyActivityProgressRings> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TodayHealthCubit, TodayHealthState>(
-      builder: (context, state) {
-        if (state is TodayHealthLoading) {
-          return const Center(child: CustomLoadingIndicator());
-        } else if (state is TodayHealthFailed) {
-          return FailWidget(
-            errorMessage: state.errorMessage,
-            onRetry: () => context.read<TodayHealthCubit>().fetchTodayData(),
-          );
-        } else if (state is TodayHealthLoaded) {
-          return _buildDailyProgressRings(
-            steps: state.steps,
-            calories: state.calories,
-            context: context,
-          );
-        } else {
-          return AppSizes.kEmptyWidget;
-        }
-      },
+    return _buildDailyProgressRings(
+      currentStepsCount: currentStepsCount,
+      stepsGoalCount: stepsGoalCount,
+      currentCaloriesBurned: currentCaloriesBurned,
+      caloriesBurnedGoal: caloriesBurnedGoal,
+      context: context,
     );
   }
 
   Container _buildDailyProgressRings({
-    required int steps,
-    required double calories,
+    required int currentStepsCount,
+    required int stepsGoalCount,
+    required double currentCaloriesBurned,
+    required double caloriesBurnedGoal,
     required BuildContext context,
   }) {
     return Container(
@@ -53,7 +39,12 @@ class _DailyActivityProgressRingsState
       child: Column(
         spacing: AppSizes.kSpacing16,
         children: [
-          FitnessRings(steps: steps, calories: calories),
+          FitnessRings(
+            currentStepsCount: currentStepsCount,
+            currentCaloriesBurned: currentCaloriesBurned,
+            stepsGoalCount: stepsGoalCount,
+            caloriesBurnedGoal: caloriesBurnedGoal,
+          ),
           _buildRingsIconsRow(context),
         ],
       ),
