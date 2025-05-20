@@ -1,8 +1,8 @@
+import 'package:fit_rush_app/constants.dart';
 import 'package:fit_rush_app/cubits/last_seven_days_health_cubit/last_seven_days_health_cubit.dart';
 import 'package:fit_rush_app/cubits/last_seven_days_health_cubit/last_seven_days_health_cubit_states.dart';
 import 'package:fit_rush_app/helper/navigation_helper.dart';
 import 'package:fit_rush_app/styles/sizes.dart';
-import 'package:fit_rush_app/views/screens/activity_progress_screen.dart';
 import 'package:fit_rush_app/widgets/common/custom_loading_indicator.dart';
 import 'package:fit_rush_app/widgets/common/fail_widget.dart';
 import 'package:fit_rush_app/widgets/home/mini_week_line_chart.dart';
@@ -58,8 +58,8 @@ class _WeekActivitySummaryCardState extends State<WeekActivitySummaryCard> {
   }
 
   void _handleOnCardClicked() {
-    NavigationHelper.push(
-      destination: ActivityProgressScreen(),
+    NavigationHelper.pushNamed(
+      routeName: kActivityProgressScreenRouteName,
       context: context,
     );
   }

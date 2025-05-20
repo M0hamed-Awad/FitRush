@@ -1,10 +1,11 @@
+import 'package:fit_rush_app/constants.dart';
 import 'package:fit_rush_app/cubits/today_health_cubit/today_health_cubit.dart';
 import 'package:fit_rush_app/cubits/today_health_cubit/today_health_cubit_states.dart';
 import 'package:fit_rush_app/cubits/user_cubit/user_cubit.dart';
 import 'package:fit_rush_app/cubits/user_cubit/user_cubit_states.dart';
 import 'package:fit_rush_app/helper/navigation_helper.dart';
 import 'package:fit_rush_app/styles/sizes.dart';
-import 'package:fit_rush_app/views/screens/activity_history_screen.dart';
+import 'package:fit_rush_app/views/screens/activities_history_screen.dart';
 import 'package:fit_rush_app/widgets/common/custom_progress_bar.dart';
 import 'package:fit_rush_app/widgets/home/daily_activity_progress_rings.dart';
 import 'package:fit_rush_app/widgets/home/daily_activity_stats.dart';
@@ -20,6 +21,10 @@ class HomeScreenBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return _buildHomeScreenBody();
+  }
+
+  SafeArea _buildHomeScreenBody() {
     return SafeArea(
       child: SingleChildScrollView(
         padding: AppSizes.kPadding8Bottom64,
@@ -50,51 +55,12 @@ class HomeScreenBody extends StatelessWidget {
                   final int remainingStepsTowardsDailyGoal =
                       userState.user!.dailyGoal.goalStepsCount - todaySteps;
 
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: AppSizes.kSpacing8,
-                    children: [
-                      // Welcome card
-                      WelcomeCard(),
-
-                      // Goal Overall Progress bar
-                      _buildDailyGoalProgressBar(
-                        context,
-                        goalProgressPercent: goalDayProgressPercent,
-                        currentStepCount: todaySteps,
-                      ),
-
-                      // Daily Goal Progress
-                      DailyActivityProgressRings(),
-
-                      // Daily Stats Cards
-                      DailyActivityStats(),
-
-                      AppSizes.kSizeH12,
-
-                      // Weekly Activity Summary Card
-                      WeekActivitySummaryCard(),
-
-                      AppSizes.kSizeH12,
-
-                      // History
-                      HistoryNavigateCard(
-                        onTap: () {
-                          NavigationHelper.push(
-                            destination: ActivityHistoryScreen(),
-                            context: context,
-                          );
-                        },
-                      ),
-
-                      AppSizes.kSizeH12,
-
-                      // Daily Motivation Card
-                      DailyMotivationCard(
-                        remainingStepsTowardsGoal:
-                            remainingStepsTowardsDailyGoal,
-                      ),
-                    ],
+                  return _buildBodyColumn(
+                    context,
+                    goalDayProgressPercent: goalDayProgressPercent,
+                    todaySteps: todaySteps,
+                    remainingStepsTowardsDailyGoal:
+                        remainingStepsTowardsDailyGoal,
                   );
                 },
               );
@@ -105,6 +71,73 @@ class HomeScreenBody extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Column _buildBodyColumn(
+    BuildContext context, {
+    required double goalDayProgressPercent,
+    required int todaySteps,
+    required int remainingStepsTowardsDailyGoal,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: AppSizes.kSpacing8,
+      children: _buildBodyColumnChildern(
+        context,
+        goalDayProgressPercent: goalDayProgressPercent,
+        todaySteps: todaySteps,
+        remainingStepsTowardsDailyGoal: remainingStepsTowardsDailyGoal,
+      ),
+    );
+  }
+
+  List<Widget> _buildBodyColumnChildern(
+    BuildContext context, {
+    required double goalDayProgressPercent,
+    required int todaySteps,
+    required int remainingStepsTowardsDailyGoal,
+  }) {
+    return [
+      // Welcome card
+      WelcomeCard(),
+
+      // Goal Overall Progress bar
+      _buildDailyGoalProgressBar(
+        context,
+        goalProgressPercent: goalDayProgressPercent,
+        currentStepCount: todaySteps,
+      ),
+
+      // Daily Goal Progress
+      DailyActivityProgressRings(),
+
+      // Daily Stats Cards
+      DailyActivityStats(),
+
+      AppSizes.kSizeH12,
+
+      // Weekly Activity Summary Card
+      WeekActivitySummaryCard(),
+
+      AppSizes.kSizeH12,
+
+      // History
+      HistoryNavigateCard(
+        onTap: () {
+          NavigationHelper.pushNamed(
+            routeName: kAddActivityScreenRouteName,
+            context: context,
+          );
+        },
+      ),
+
+      AppSizes.kSizeH12,
+
+      // Daily Motivation Card
+      DailyMotivationCard(
+        remainingStepsTowardsGoal: remainingStepsTowardsDailyGoal,
+      ),
+    ];
   }
 
   Widget _buildDailyGoalProgressBar(
