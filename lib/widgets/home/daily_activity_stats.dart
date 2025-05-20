@@ -3,13 +3,14 @@ import 'package:fit_rush_app/widgets/home/daily_stats_card.dart';
 import 'package:flutter/material.dart';
 
 class DailyActivityStats extends StatelessWidget {
-  final int stepsCount;
-  final double calories, heartRate, distance;
+  final int stepsCount, activeMinutes;
+  final double calories, distance;
+
   const DailyActivityStats({
     super.key,
     required this.stepsCount,
     required this.calories,
-    required this.heartRate,
+    required this.activeMinutes,
     required this.distance,
   });
 
@@ -25,7 +26,7 @@ class DailyActivityStats extends StatelessWidget {
       spacing: AppSizes.kSpacing8,
       children: [
         _buildFirstRow(stepsCount: stepsCount, calories: calories),
-        _buildSecondRow(heartRate: heartRate, distance: distance),
+        _buildSecondRow(activeMinutes: activeMinutes, distance: distance),
       ],
     );
   }
@@ -41,12 +42,12 @@ class DailyActivityStats extends StatelessWidget {
     );
   }
 
-  Row _buildSecondRow({required double heartRate, required double distance}) {
+  Row _buildSecondRow({required int activeMinutes, required double distance}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       spacing: AppSizes.kSpacing8,
       children: [
-        DailyStatsCard<double>(text: "BPM (avg)", data: heartRate),
+        DailyStatsCard<int>(text: "Mins", data: activeMinutes),
         DailyStatsCard<double>(text: "Meters", data: distance),
       ],
     );

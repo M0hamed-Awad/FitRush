@@ -61,7 +61,7 @@ class DailyActivityProgressWithStats extends StatelessWidget {
         DailyActivityStats(
           stepsCount: state.steps,
           calories: state.calories,
-          heartRate: state.heartRate,
+          activeMinutes: state.activeMinutes,
           distance: state.distance,
         ),
       ],
