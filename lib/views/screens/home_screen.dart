@@ -1,10 +1,8 @@
 import 'package:fit_rush_app/cubits/health_permissions_cubit/health_permissions_cubit.dart';
 import 'package:fit_rush_app/cubits/health_permissions_cubit/health_permissions_cubit_states.dart';
-import 'package:fit_rush_app/helper/navigation_helper.dart';
-import 'package:fit_rush_app/styles/colors.dart';
-import 'package:fit_rush_app/styles/sizes.dart';
-import 'package:fit_rush_app/views/screens/add_activity_screen.dart';
 import 'package:fit_rush_app/views/screens/profile_screen.dart';
+import 'package:fit_rush_app/widgets/add_activity/add_activity_screen_body.dart';
+import 'package:fit_rush_app/widgets/common/custom_bottom_navigation_bar.dart';
 import 'package:fit_rush_app/widgets/common/custom_drawer.dart';
 import 'package:fit_rush_app/widgets/common/custom_loading_indicator.dart';
 import 'package:fit_rush_app/widgets/common/fail_widget.dart';
@@ -23,11 +21,14 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   // List of pages to navigate to
-  final List<Widget> _pages = [HomeScreen(), ProfileScreen()];
+  final List<Widget> _pages = [
+    HomeScreenBody(),
+    AddActivityScreenBody(),
+    ProfileScreen(),
+  ];
 
   void _onItemTapped(int index) {
     setState(() => _selectedIndex = index);
-    NavigationHelper.push(destination: _pages[index], context: context);
   }
 
   @override
@@ -40,10 +41,11 @@ class _HomeScreenState extends State<HomeScreen> {
           height: 40,
         ),
       ),
-      floatingActionButton: _buildFab(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: _buildBottomNavBar(),
       body: _buildHomeScreenBody(),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+      ),
       drawer: CustomDrawer(),
     );
   }
@@ -57,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
         } else if (state is HealthPermissionsDenied) {
           return _buildOnPermissionsDeniedWidget(state, context);
         } else if (state is HealthPermissionsGranted) {
-          return HomeScreenBody();
+          return IndexedStack(index: _selectedIndex, children: _pages);
         } else {
           return SizedBox.shrink();
         }
@@ -78,74 +80,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ).requestPermissionsOnce();
         },
       ),
-    );
-  }
-
-  FloatingActionButton _buildFab() {
-    return FloatingActionButton(
-      onPressed: () {
-        NavigationHelper.push(
-          destination: AddActivityScreen(),
-          context: context,
-        );
-      },
-      shape: RoundedRectangleBorder(borderRadius: AppSizes.kBorderRadius40),
-      backgroundColor: AppColors.kPrimaryColor,
-      foregroundColor: AppColors.kSecondaryColorLight,
-      child: Icon(Icons.add_rounded, size: 32),
-    );
-  }
-
-  Widget _buildBottomNavBar() {
-    return BottomAppBar(
-      shape: CircularNotchedRectangle(),
-      notchMargin: 8,
-      child: _buildBottomNavBarBody(),
-    );
-  }
-
-  Row _buildBottomNavBarBody() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        _buildBottomNavItem(Icons.home_rounded, "Home", 0),
-        AppSizes.kSizeW40, // Space for the FAB
-        _buildBottomNavItem(Icons.person_rounded, "Profile", 1),
-      ],
-    );
-  }
-
-  Widget _buildBottomNavItem(IconData icon, String label, int index) {
-    return InkWell(
-      onTap: () => _onItemTapped(index),
-      child: _buildBottomNavItemBody(icon, index, label),
-    );
-  }
-
-  Column _buildBottomNavItemBody(IconData icon, int index, String label) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(
-          icon,
-          color:
-              _selectedIndex == index
-                  ? AppColors.kPrimaryColor
-                  : Theme.of(context).colorScheme.onSurface,
-        ),
-        AppSizes.kSizeH4,
-        Text(
-          label,
-          style: TextStyle(
-            color:
-                _selectedIndex == index
-                    ? AppColors.kPrimaryColor
-                    : Theme.of(context).colorScheme.onSurface,
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
     );
   }
 }
