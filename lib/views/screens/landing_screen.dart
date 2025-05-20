@@ -51,7 +51,15 @@ class LandingScreen extends StatelessWidget {
       future: _determineStartScreen(context),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Scaffold(body: Center(child: CustomLoadingIndicator()));
+          return const Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 40,
+                height: 40,
+                child: CustomLoadingIndicator(),
+              ),
+            ),
+          );
         }
         return snapshot.data!;
       },

@@ -3,7 +3,6 @@ import 'package:fit_rush_app/cubits/last_seven_days_health_cubit/last_seven_days
 import 'package:fit_rush_app/cubits/last_seven_days_health_cubit/last_seven_days_health_cubit_states.dart';
 import 'package:fit_rush_app/helper/navigation_helper.dart';
 import 'package:fit_rush_app/styles/sizes.dart';
-import 'package:fit_rush_app/widgets/common/custom_loading_indicator.dart';
 import 'package:fit_rush_app/widgets/common/fail_widget.dart';
 import 'package:fit_rush_app/widgets/home/mini_week_line_chart.dart';
 import 'package:flutter/material.dart';
@@ -22,9 +21,7 @@ class _WeekActivitySummaryCardState extends State<WeekActivitySummaryCard> {
   Widget build(BuildContext context) {
     return BlocBuilder<LastSevenDaysHealthCubit, LastSevenDaysHealthState>(
       builder: (context, state) {
-        if (state is LastSevenDaysHealthLoading) {
-          return const Center(child: CustomLoadingIndicator());
-        } else if (state is LastSevenDaysHealthFailed) {
+        if (state is LastSevenDaysHealthFailed) {
           return FailWidget(
             errorMessage: state.errorMessage,
             onRetry:

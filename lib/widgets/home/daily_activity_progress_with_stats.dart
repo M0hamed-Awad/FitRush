@@ -22,7 +22,13 @@ class DailyActivityProgressWithStats extends StatelessWidget {
     return BlocBuilder<TodayHealthCubit, TodayHealthState>(
       builder: (context, state) {
         if (state is TodayHealthLoading) {
-          return const Center(child: CustomLoadingIndicator());
+          return const Center(
+            child: SizedBox(
+              width: 40,
+              height: 40,
+              child: CustomLoadingIndicator(),
+            ),
+          );
         } else if (state is TodayHealthFailed) {
           return FailWidget(
             errorMessage: state.errorMessage,

@@ -15,10 +15,6 @@ class DailyActivityStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _buildDailyActivityStatsBody();
-  }
-
-  Widget _buildDailyActivityStatsBody() {
     return _buildDataStatsCards();
   }
 
