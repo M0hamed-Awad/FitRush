@@ -4,24 +4,26 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class FitnessRings extends StatelessWidget {
-  final int steps;
-  final double calories;
-  final int stepsGoal;
-  final int caloriesGoal;
+  final int currentStepsCount, stepsGoalCount;
+  final double currentCaloriesBurned, caloriesBurnedGoal;
 
   const FitnessRings({
     super.key,
-    required this.steps,
-    required this.calories,
-    this.stepsGoal = 5000,
-    this.caloriesGoal = 350,
+    required this.currentStepsCount,
+    required this.currentCaloriesBurned,
+    required this.stepsGoalCount,
+    required this.caloriesBurnedGoal,
   });
 
   @override
   Widget build(BuildContext context) {
     // Clamp to set the Percent Range from 0 to 1
-    final double stepsPercent = (steps / stepsGoal).clamp(0.0, 1.0);
-    final double caloriesPercent = (calories / caloriesGoal).clamp(0.0, 1.0);
+    final double stepsPercent = (currentStepsCount / stepsGoalCount).clamp(
+      0.0,
+      1.0,
+    );
+    final double caloriesPercent = (currentCaloriesBurned / caloriesBurnedGoal)
+        .clamp(0.0, 1.0);
 
     return Stack(
       alignment: Alignment.center,
@@ -67,7 +69,7 @@ class FitnessRings extends StatelessWidget {
         spacing: AppSizes.kSpacing8,
         children: [
           Text(
-            "$steps",
+            "$currentStepsCount",
             style: TextStyle(
               fontSize: 28,
               color: AppColors.kBlueColor,
@@ -75,7 +77,7 @@ class FitnessRings extends StatelessWidget {
             ),
           ),
           Text(
-            "$calories",
+            "$currentCaloriesBurned",
             style: TextStyle(
               fontSize: 22,
               color: AppColors.kAccentOrangeColor,
