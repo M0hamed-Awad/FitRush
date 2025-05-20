@@ -45,9 +45,6 @@ class HomeScreenBody extends StatelessWidget {
                         currentSteps: todaySteps,
                         goalStepsCount:
                             userState.user!.dailyGoal.goalStepsCount,
-                        currentCaloriesBurned: todayCalories,
-                        goalCaloriesBurned:
-                            userState.user!.dailyGoal.goalCaloriesBurned,
                       );
 
                   final int remainingStepsTowardsDailyGoal =
@@ -181,18 +178,13 @@ class HomeScreenBody extends StatelessWidget {
   double _calculateDayProgressPercent({
     required int currentSteps,
     required int goalStepsCount,
-    required double currentCaloriesBurned,
-    required double goalCaloriesBurned,
   }) {
-    if (goalStepsCount == 0 || goalCaloriesBurned == 0) return 0;
+    if (goalStepsCount == 0) return 0;
 
     double stepsPercent = (currentSteps / goalStepsCount);
-    double caloriesPercent = (currentCaloriesBurned / goalCaloriesBurned);
 
     stepsPercent = stepsPercent.clamp(0.0, 1.0);
-    caloriesPercent = caloriesPercent.clamp(0.0, 1.0);
 
-    double totalProgress = (stepsPercent + caloriesPercent) / 2;
-    return totalProgress;
+    return stepsPercent;
   }
 }
