@@ -10,16 +10,14 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocBuilder<UserCubit, UserState>(
-        builder: (context, state) {
-          if (state.user == null) {
-            return AppSizes.kEmptyWidget;
-          } else {
-            return ProfileScreenBody(user: state.user);
-          }
-        },
-      ),
+    return BlocBuilder<UserCubit, UserState>(
+      builder: (context, state) {
+        if (state.user == null) {
+          return AppSizes.kEmptyWidget;
+        } else {
+          return SafeArea(child: ProfileScreenBody(user: state.user));
+        }
+      },
     );
   }
 }
