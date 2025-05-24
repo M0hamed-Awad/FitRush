@@ -140,38 +140,17 @@ class HealthService {
     }
   }
 
-  static Future<int?> getTodaysActiveMinutes() async {
+  static Future<int?> getTodaysMoveMinutes() async {
     try {
       debugPrint("[DEBUG] Fetching Today's Active Minutes...");
 
       // Get Active Minutes for IOS
       if (Platform.isIOS) {
-        final num? totalActiveMinutes = await _getTodayTotalDataValue(
-          types: [HealthDataType.EXERCISE_TIME],
-        );
-        debugPrint('[DEBUG] (iOS) Total Active Minutes: $totalActiveMinutes');
-        return totalActiveMinutes?.toInt();
+        return await _getTodaysMoveMinutesForIos();
       }
       // Get Active Minutes for Android
       else if (Platform.isAndroid) {
-        final List<HealthDataPoint> workoutPoints =
-            await _getSpecificDayHealthDataPoints(
-              types: [HealthDataType.WORKOUT],
-              startTime: _startOfTodayTime,
-              endTime: _currentDayTime,
-            );
-
-        int totalActiveMinutes = 0;
-
-        for (var point in workoutPoints) {
-          final duration = point.dateTo.difference(point.dateFrom).inMinutes;
-          totalActiveMinutes += duration;
-        }
-
-        debugPrint(
-          '[DEBUG] (Android) Total Active Minutes: $totalActiveMinutes',
-        );
-        return totalActiveMinutes;
+        return await _getTodaysMoveMinutesForAndroid();
       } else {
         debugPrint("[DEBUG ERROR] Unsupported platform");
         return null;
@@ -353,5 +332,38 @@ class HealthService {
     final average = (values.reduce((a, b) => a + b)) / (values.length);
 
     return average;
+  }
+
+  // For Todays Move Minutes
+  // IOS: Exercise Time
+  static Future<int?> _getTodaysMoveMinutesForIos() async {
+    final num? totalActiveMinutes = await _getTodayTotalDataValue(
+      types: [HealthDataType.EXERCISE_TIME],
+    );
+
+    debugPrint('[DEBUG] (iOS) Total Active Minutes: $totalActiveMinutes');
+
+    return totalActiveMinutes?.toInt();
+  }
+
+  // Android: From Distance Delta (distance covered)
+  static Future<int> _getTodaysMoveMinutesForAndroid() async {
+    final List<HealthDataPoint> totalDistanceCoveredPoints =
+        await _getSpecificDayHealthDataPoints(
+          types: [HealthDataType.DISTANCE_DELTA],
+          startTime: _startOfTodayTime,
+          endTime: _currentDayTime,
+        );
+
+    int totalActiveMinutes = 0;
+
+    for (var point in totalDistanceCoveredPoints) {
+      final duration = point.dateTo.difference(point.dateFrom).inMinutes;
+      totalActiveMinutes += duration;
+    }
+
+    debugPrint('[DEBUG] (Android) Total Active Minutes: $totalActiveMinutes');
+
+    return totalActiveMinutes;
   }
 }

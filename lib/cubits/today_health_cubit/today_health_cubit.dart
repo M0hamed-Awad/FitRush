@@ -11,7 +11,7 @@ class TodayHealthCubit extends Cubit<TodayHealthState> {
       final steps = await HealthService.getTodaysSteps();
       final calories = await HealthService.getTodaysCalories();
       final distance = await HealthService.getTodaysDistanceCovered();
-      final activeMinutes = await HealthService.getTodaysActiveMinutes();
+      final activeMinutes = await HealthService.getTodaysMoveMinutes();
 
       emit(
         TodayHealthLoaded(
