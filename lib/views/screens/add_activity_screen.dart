@@ -6,6 +6,14 @@ class AddActivityScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AddActivityScreenBody();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Add Activity',
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
+      ),
+      body: SafeArea(child: AddActivityScreenBody()),
+    );
   }
 }

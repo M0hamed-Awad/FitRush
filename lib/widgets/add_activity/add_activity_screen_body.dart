@@ -140,185 +140,175 @@ class _AddActivityScreenBodyState extends State<AddActivityScreenBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Add Activity',
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: ListView(
-              children: [
-                const Text(
-                  'Activity Type',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              const Text(
+                'Activity Type',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              DropdownButtonFormField<ExerciseType>(
+                value: _selectedExerciseType,
+                items:
+                    ExerciseType.values
+                        .map(
+                          (e) =>
+                              DropdownMenuItem(value: e, child: Text(e.name)),
+                        )
+                        .toList(),
+                onChanged: (val) {
+                  setState(() {
+                    _selectedExerciseType = val;
+                  });
+                },
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                 ),
-                DropdownButtonFormField<ExerciseType>(
-                  value: _selectedExerciseType,
-                  items:
-                      ExerciseType.values
-                          .map(
-                            (e) =>
-                                DropdownMenuItem(value: e, child: Text(e.name)),
-                          )
-                          .toList(),
-                  onChanged: (val) {
-                    setState(() {
-                      _selectedExerciseType = val;
-                    });
-                  },
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
+                validator:
+                    (value) =>
+                        value == null ? 'Please select an activity type' : null,
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Duration (min)',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              TextFormField(
+                controller: _durationController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: 'Enter duration in minutes',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter duration';
+                  }
+                  if (int.tryParse(value) == null) {
+                    return 'Duration must be a number';
+                  }
+                  if (int.parse(value) <= 0) {
+                    return 'Duration must be greater than zero';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Calories Burned',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              TextFormField(
+                controller: _caloriesController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: 'Enter calories burned',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter calories burned';
+                  }
+                  if (int.tryParse(value) == null) {
+                    return 'Calories must be a number';
+                  }
+                  if (int.parse(value) < 0) {
+                    return 'Calories cannot be negative';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Date & Time',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              InkWell(
+                onTap: _pickDateTime,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 14,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppColors.kGreyColor),
+                  ),
+                  child: Text(
+                    _selectedDateTime == null
+                        ? 'Select Date & Time'
+                        : '${_selectedDateTime!.toLocal()}'.split('.').first,
+                    style: TextStyle(
+                      color:
+                          _selectedDateTime == null
+                              ? AppColors.kGreyColor
+                              : Colors.black,
                     ),
                   ),
-                  validator:
-                      (value) =>
-                          value == null
-                              ? 'Please select an activity type'
-                              : null,
                 ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Duration (min)',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                TextFormField(
-                  controller: _durationController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintText: 'Enter duration in minutes',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Notes',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              TextFormField(
+                controller: _notesController,
+                decoration: InputDecoration(
+                  hintText: 'Optional notes',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter duration';
-                    }
-                    if (int.tryParse(value) == null) {
-                      return 'Duration must be a number';
-                    }
-                    if (int.parse(value) <= 0) {
-                      return 'Duration must be greater than zero';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Calories Burned',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                TextFormField(
-                  controller: _caloriesController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintText: 'Enter calories burned',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter calories burned';
-                    }
-                    if (int.tryParse(value) == null) {
-                      return 'Calories must be a number';
-                    }
-                    if (int.parse(value) < 0) {
-                      return 'Calories cannot be negative';
-                    }
-                    return null;
-                  },
                 ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Date & Time',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                InkWell(
-                  onTap: _pickDateTime,
-                  child: Container(
+                maxLines: 2,
+              ),
+              const SizedBox(height: 24),
+              Center(
+                child: ElevatedButton(
+                  onPressed: _onAdd,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.kButtonColor,
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
+                      horizontal: 48,
                       vertical: 14,
                     ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColors.kGreyColor),
-                    ),
-                    child: Text(
-                      _selectedDateTime == null
-                          ? 'Select Date & Time'
-                          : '${_selectedDateTime!.toLocal()}'.split('.').first,
-                      style: TextStyle(
-                        color:
-                            _selectedDateTime == null
-                                ? AppColors.kGreyColor
-                                : Colors.black,
-                      ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
                     ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Notes',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                TextFormField(
-                  controller: _notesController,
-                  decoration: InputDecoration(
-                    hintText: 'Optional notes',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                  ),
-                  maxLines: 2,
-                ),
-                const SizedBox(height: 24),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: _onAdd,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.kButtonColor,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 48,
-                        vertical: 14,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                    ),
-                    child: const Text(
-                      'Add',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                    ),
+                  child: const Text(
+                    'Add',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
