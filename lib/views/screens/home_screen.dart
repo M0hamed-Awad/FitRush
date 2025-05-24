@@ -1,7 +1,7 @@
 import 'package:fit_rush_app/cubits/health_permissions_cubit/health_permissions_cubit.dart';
 import 'package:fit_rush_app/cubits/health_permissions_cubit/health_permissions_cubit_states.dart';
+import 'package:fit_rush_app/views/screens/add_activity_screen.dart';
 import 'package:fit_rush_app/views/screens/profile_screen.dart';
-import 'package:fit_rush_app/widgets/add_activity/add_activity_screen_body.dart';
 import 'package:fit_rush_app/widgets/common/custom_bottom_navigation_bar.dart';
 import 'package:fit_rush_app/widgets/common/custom_drawer.dart';
 import 'package:fit_rush_app/widgets/common/custom_loading_indicator.dart';
@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // List of pages to navigate to
   final List<Widget> _pages = [
     HomeScreenBody(),
-    AddActivityScreenBody(),
+    AddActivityScreen(),
     ProfileScreen(),
   ];
 
@@ -34,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Image(
           image: AssetImage("assets/images/Logo-V2-red.png"),
